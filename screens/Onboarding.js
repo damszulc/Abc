@@ -7,14 +7,12 @@ import { Images, nowTheme } from '../constants/';
 import { HeaderHeight } from '../constants/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-    console.log('dupa');
     let userId = 0;
 
     let startEkran = "Register";
     AsyncStorage.getItem('logged_user_id')
         .then((value) => {
           userId = value;
-          console.log(userId);
           startEkran = (userId > 0) ? "App" : "Register"
         });
 
@@ -44,7 +42,7 @@ export default class Onboarding extends React.Component {
                 }}>
                 <Text
                   color="white"
-                  size={12}
+                  size={11}
                   style={{ fontFamily: 'montserrat-regular' }}
                 >
                   Designed and Coded

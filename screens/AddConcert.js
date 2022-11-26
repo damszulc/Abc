@@ -3,15 +3,18 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  View,
   ScrollView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme } from "galio-framework";
-import { Switch } from "../components";
-import RNPickerSelect from 'react-native-picker-select';
+import { Switch, Button, Icon, Input } from "../components";
+
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Button, Icon, Input } from '../components';
 import Moment from 'moment';
+import {Picker} from '@react-native-picker/picker';
 
 import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
@@ -24,18 +27,43 @@ export default class AddConcert extends React.Component {
         data_events_types: [],
         data_teams_managers: [],
         isLoading: true,
-        team_id: '',
-        concert_date: '09/09/2022'
+        team_id: 0,
+        place: '',
+        concert_date: '',
+        concert_time: '',
+        duration: 0,
+        sample_date: '',
+        sample_time: '',
+        sets_number: 0,
+        event_details: '',
+        event_type_id: 0,
+        tour_manager_id: 0,
+        contact_phone: '',
+        user_id: 0
     };
 
-
+    AsyncStorage.getItem('logged_user_id')
+         .then((value) => {
+         this.setState({user_id: value})
+    });
   }
   InsertRecord=()=>{
     var TeamId = this.state.team_id;
+    var Place = this.state.place;
     var ConcertDate = this.state.concert_date;
+    var ConcertTime = this.state.concert_time;
+    var Duration = this.state.duration;
+    var SampleDate = this.state.sample_date;
+    var SampleTime = this.state.sample_time;
+    var SetsNumber = this.state.sets_number;
+    var EventDetails = this.state.event_details;
+    var EventTypeId = this.state.event_type_id;
+    var TourManagerId = this.state.tour_manager_id;
+    var ContactPhone = this.state.contact_phone;
+    var UserId = this.state.user_id;
 
-    if ((ConcertDate.length==0)){
-      alert("Required Field Is Missing!!!");
+    if (TeamId.value==0 || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
+      alert("Required field is missing !!!");
     }else{
       var APIURL = "http://srv36013.seohost.com.pl/anseba/save_concert.php";
 
@@ -46,7 +74,18 @@ export default class AddConcert extends React.Component {
 
       var Data ={
         TeamId: TeamId,
-        ConcertDate: ConcertDate
+        Place: Place,
+        ConcertDate: ConcertDate,
+        ConcertTime: ConcertTime,
+        Duration: Duration,
+        SampleDate: SampleDate,
+        SampleTime: SampleTime,
+        SetsNumber: SetsNumber,
+        EventDetails: EventDetails,
+        EventTypeId: EventTypeId,
+        TourManagerId: TourManagerId,
+        ContactPhone: ContactPhone,
+        UserId: UserId
       };
 
       fetch(APIURL,{
@@ -58,9 +97,8 @@ export default class AddConcert extends React.Component {
       .then((Response)=>{
         if (Response[0].Message == "Success") {
           console.log("true")
-          //this.props.navigation.navigate("App");
+          this.props.navigation.navigate("Concerts");
         }
-        console.log(Data);
       })
       .catch((error)=>{
         console.error("ERROR FOUND" + error);
@@ -89,72 +127,8 @@ export default class AddConcert extends React.Component {
   toggleSwitch = switchNumber =>
     this.setState({ [switchNumber]: !this.state[switchNumber] });
 
-  renderItem = ({ item }) => {
-    const { navigate } = this.props.navigation;
-
-    switch (item.type) {
-      case "switch":
-        return (
-          <Block row middle space="between" style={styles.rows}>
-            <Text style={{ fontFamily: 'montserrat-regular' }} size={14} color="#525F7F">{item.title}</Text>
-            <Switch
-              onValueChange={() => this.toggleSwitch(item.id)}
-              value={this.state[item.id]}
-            />
-          </Block>
-        );
-      case "button":
-        return (
-          <Block style={styles.rows}>
-            <TouchableOpacity onPress={() => navigate(item.id)}>
-              <Block row middle space="between" style={{ paddingTop: 7 }}>
-                <Text style={{ fontFamily: 'montserrat-regular' }} size={14} color="#525F7F">{item.title}</Text>
-                <Icon
-                  name="angle-right"
-                  family="font-awesome"
-                  style={{ paddingRight: 5 }}
-                />
-              </Block>
-            </TouchableOpacity>
-          </Block>
-        );
-      default:
-        break;
-    }
-  };
-
   render() {
     const { data_teams, data_events_types, data_teams_managers, isLoading } = this.state;
-
-    const DropdownTeams = () => {
-        return (
-            <RNPickerSelect
-                    onValueChange={(value) => console.log(value)}
-                items={data_teams}
-                placeholder={{label: "Select team from list", value: null}}
-            />
-        );
-    };
-
-    const DropdownEventsTypes = () => {
-            return (
-                <RNPickerSelect
-                    onValueChange={(value) => console.log(value)}
-                    items={data_events_types}
-                placeholder={{label: "Select event type from list", value: null}}
-                />
-            );
-        };
-
-    const DropdownTeamsManagers = () => {
-            return (
-                <RNPickerSelect
-                    onValueChange={(value) => console.log(value)}
-                    items={data_teams_managers}
-                placeholder={{label: "Select team manager from list", value: null}}
-                />
-            );
-        };
 
     const InputWithDatePickerConcert = (props) => {
         const [date, setDate] = React.useState(new Date());
@@ -163,7 +137,7 @@ export default class AddConcert extends React.Component {
         return (
             <>
                 <Input
-                    placeholder="Concert date"
+                    placeholder="Concert date *"
                     style={styles.inputs_half}
                     iconContent={
                         <Icon
@@ -200,7 +174,7 @@ export default class AddConcert extends React.Component {
                 return (
                     <>
                         <Input
-                             placeholder="Concert time"
+                             placeholder="Concert time *"
                              style={styles.inputs_half}
                              iconContent={
                                  <Icon
@@ -212,6 +186,7 @@ export default class AddConcert extends React.Component {
                                     onPress={() => setShowPicker(true)}
                                  />
                              }
+                            value={this.state.concert_time}
                              onClick={() => setShowPicker(true) || console.log(showPicker)}
                         />
                         { showPicker ? (
@@ -220,7 +195,7 @@ export default class AddConcert extends React.Component {
                                 value={new Date(time)}
                                 mode="time"
                                 is24Hour={true}
-                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || console.log(time)}
+                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({concert_time: Moment(time).format('HH:mm')})}
                                 timeZoneOffsetInSeconds={3600}
                               />
                         ) : null }
@@ -247,6 +222,7 @@ export default class AddConcert extends React.Component {
                                onPress={() => setShowPicker(true)}
                            />
                        }
+                        value={this.state.sample_date}
                        onClick={() => setShowPicker(true) || console.log(showPicker)}
                    />
                    { showPicker ? (
@@ -255,7 +231,7 @@ export default class AddConcert extends React.Component {
                            value={new Date(date)}
                            mode="date"
                            is24Hour={true}
-                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || console.log(date)}
+                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({sample_date: Moment(date).format('DD/MM/YYYY')})}
                            maximumDate={new Date()}
                          />
                    ) : null }
@@ -282,6 +258,7 @@ export default class AddConcert extends React.Component {
                                        onPress={() => setShowPicker(true)}
                                     />
                                 }
+                                value={this.state.sample_time}
                                 onClick={() => setShowPicker(true) || console.log(showPicker)}
                            />
                            { showPicker ? (
@@ -290,151 +267,185 @@ export default class AddConcert extends React.Component {
                                    value={new Date(time)}
                                    mode="time"
                                    is24Hour={true}
-                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || console.log(time)}
+                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({sample_time: Moment(time).format('HH:mm')})}
                                    timeZoneOffsetInSeconds={3600}
                                  />
                            ) : null }
                        </>
                    );
                };
-    const recommended = [
-      { title: "Use FaceID to sign in", id: "face", type: "switch" },
-      { title: "Auto-Lock security", id: "autolock", type: "switch" },
-      { title: "Notifications", id: "NotificationsSettings", type: "button" }
-    ];
 
-    const payment = [
-      { title: "Manage Payment Options", id: "Payment", type: "button" },
-      { title: "Manage Gift Cards", id: "gift", type: "button" }
-    ];
-
-    const privacy = [
-      { title: "User Agreement", id: "Agreement", type: "button" },
-      { title: "Privacy", id: "Privacy", type: "button" },
-      { title: "About", id: "About", type: "button" }
-    ];
-
-    return (
+    return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
       >
           <Block center style={styles.title}>
-                      <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-                        Basic information
-                      </Text>
-                    </Block>
-                     <Block row middle style={styles.rows}>
-         <FlatList
-                        ListHeaderComponent={DropdownTeams}
-                      />
-                      </Block>
-                      <Block row middle style={styles.rows}>
-                      <Input
-                                                    placeholder="Concert place"
-                                                    style={styles.inputs}
-                                                    iconContent={
-                                                      <Icon
-                                                        size={16}
-                                                        color="#ADB5BD"
-                                                        name="pin-32x"
-                                                        family="NowExtra"
-                                                        style={styles.inputIcons}
-                                                      />
-                                                    }
-                                                    onChangeText={email=>this.setState({email})}
-                                                  />
-                      </Block>
-                      <Block row middle style={styles.rows}>
-                               <FlatList
-                                              ListHeaderComponent={InputWithDatePickerConcert}
-                                            />
-                                            <FlatList
-                                                 ListHeaderComponent={InputWithTimePickerConcert}
-                                                                                          />
-                                            </Block>
-                       <Block row middle style={styles.rows}>
-                                                      <FlatList
-                                                                     ListHeaderComponent={InputWithDatePickerSample}
-                                                                   />
-                                                                   <FlatList
-                                                                        ListHeaderComponent={InputWithTimePickerSample}
-                                                                                                                 />
-                                                                   </Block>
-        <Block center style={styles.title}>
-          <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-            Event information
-          </Text>
-        </Block>
-            <Block row middle style={styles.rows}>
-                                  <Input
-                                                                placeholder="Number of sets"
-                                                                style={styles.inputs}
-                                                                iconContent={
-                                                                  <Icon
-                                                                    size={16}
-                                                                    color="#ADB5BD"
-                                                                    name="agenda-bookmark2x"
-                                                                    family="NowExtra"
-                                                                    style={styles.inputIcons}
-                                                                  />
-                                                                }
-                                                                onChangeText={email=>this.setState({email})}
-                                                              />
-                                  </Block>
-                                  <Block row middle style={styles.rows}>
-                                           <FlatList
-                                                          ListHeaderComponent={DropdownEventsTypes}
-                                                        />
-                                                        </Block>
-                                     <Block row middle style={styles.rows}>
-                                                                     <Input
-                                                                                                   placeholder="Event details"
-                                                                                                   style={styles.inputs_textarea}
-                                                                                                   iconContent={
-                                                                                                     <Icon
-                                                                                                       size={16}
-                                                                                                       color="#ADB5BD"
-                                                                                                       name="list-bullet2x"
-                                                                                                       family="NowExtra"
-                                                                                                       style={styles.inputIcons}
-                                                                                                     />
-                                                                                                   }
-                                                                                                   onChangeText={email=>this.setState({email})}
-                                                                                                 />
-                                                                     </Block>
-                                  <Block row middle style={styles.rows}>
-                                           <FlatList
-                                                          ListHeaderComponent={DropdownTeamsManagers}
-                                                        />
-                                                        </Block>
-                                                        <Block row middle style={styles.rows}>
-                                                                                                                             <Input
-                                                                                                                                                           placeholder="Client phone"
-                                                                                                                                                           style={styles.inputs_textarea}
-                                                                                                                                                           iconContent={
-                                                                                                                                                             <Icon
-                                                                                                                                                               size={16}
-                                                                                                                                                               color="#ADB5BD"
-                                                                                                                                                               name="headphones-22x"
-                                                                                                                                                               family="NowExtra"
-                                                                                                                                                               style={styles.inputIcons}
-                                                                                                                                                             />
-                                                                                                                                                           }
-                                                                                                                                                           onChangeText={email=>this.setState({email})}
-                                                                                                                                                         />
-                                                                                                                             </Block>
-                                                        <Block center>
-                                                            <Button color="primary" round style={styles.createButton} onPress={()=>{this.InsertRecord()}}>
-                                                                                    <Text
-                                                                                      style={{ fontFamily: 'montserrat-bold' }}
-                                                                                      size={14}
-                                                                                      color={nowTheme.COLORS.WHITE}
-                                                                                    >
-                                                                                      Save concert
-                                                                                    </Text>
-                                                                                  </Button>
-                                                                                </Block>
+            <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
+                Basic information
+            </Text>
+          </Block>
+          <Block middle>
+            <Block style={styles.rows, styles.inputs_select}>
+                <Picker
+                    selectedValue={this.state.team_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({team_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Select team from list *' value='0' />
+                        { data_teams.map((item, key)=>
+                            <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                        )}
+               </Picker>
+            </Block>
+          </Block>
+          <Block row middle style={styles.rows}>
+            <Input
+                placeholder="Concert place *"
+                style={styles.inputs}
+                iconContent={
+                    <Icon
+                        size={16}
+                        color="#ADB5BD"
+                        name="pin-32x"
+                        family="NowExtra"
+                        style={styles.inputIcons}
+                    />
+                }
+                value={this.state.place}
+                onChangeText={place=>this.setState({place})}
+            />
+          </Block>
+          <Block row middle style={styles.rows}>
+            <FlatList
+                keyExtractor={(item, index) => item.id + index.toString()}
+                ListHeaderComponent={InputWithDatePickerConcert}
+                horizontal={true}
+            />
+            <FlatList
+                keyExtractor={(item, index) => item.id + index.toString()}
+                ListHeaderComponent={InputWithTimePickerConcert}
+                horizontal={true}
+            />
+          </Block>
+
+          <Block row middle style={styles.rows}>
+            <Input
+                placeholder="Duration in minutes *"
+                style={styles.inputs}
+                iconContent={
+                    <Icon
+                        size={16}
+                        color="#ADB5BD"
+                        name="time-alarm2x"
+                        family="NowExtra"
+                        style={styles.inputIcons}
+                    />
+                }
+                value={this.state.duration}
+                onChangeText={duration=>this.setState({duration})}
+            />
+          </Block>
+          <Block row middle style={styles.rows}>
+            <FlatList
+                keyExtractor={(item, index) => item.id + index.toString()}
+                ListHeaderComponent={InputWithDatePickerSample}
+                horizontal={true}
+            />
+            <FlatList
+                keyExtractor={(item, index) => item.id + index.toString()}
+                ListHeaderComponent={InputWithTimePickerSample}
+                horizontal={true}
+            />
+          </Block>
+          <Block center style={styles.title}>
+            <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
+                Additional information
+            </Text>
+          </Block>
+          <Block row middle style={styles.rows}>
+            <Input
+                placeholder="Number of sets"
+                style={styles.inputs}
+                iconContent={
+                    <Icon
+                        size={16}
+                        color="#ADB5BD"
+                        name="agenda-bookmark2x"
+                        family="NowExtra"
+                        style={styles.inputIcons}
+                    />
+                }
+                value={this.state.sets_number}
+                onChangeText={sets_number=>this.setState({sets_number})}
+            />
+          </Block>
+          <Block middle>
+            <Block style={styles.rows, styles.inputs_select}>
+                <Picker
+                    selectedValue={this.state.event_type_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({event_type_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Select event type from list *' value='0' />
+                        { data_events_types.map((item, key)=>
+                            <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                        )}
+                </Picker>
+            </Block>
+          </Block>
+          <Block row middle style={styles.rows}>
+            <Input
+                placeholder="Event details"
+                style={styles.inputs_textarea}
+                iconContent={
+                    <Icon
+                        size={16}
+                        color="#ADB5BD"
+                        name="list-bullet2x"
+                        family="NowExtra"
+                        style={styles.inputIcons}
+                    />
+                }
+                value={this.state.event_details}
+                onChangeText={event_details=>this.setState({event_details})}/>
+          </Block>
+          <Block middle>
+            <Block style={styles.rows, styles.inputs_select}>
+                <Picker
+                    selectedValue={this.state.tour_manager_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({tour_manager_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Select tour manager from list *' value='0' />
+                        { data_teams_managers.map((item, key)=>
+                            <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                        )}
+                </Picker>
+            </Block>
+          </Block>
+          <Block row middle style={styles.rows}>
+                                <Input
+                                    placeholder="Contact phone"
+                                    style={styles.inputs_textarea}
+                                    iconContent={
+                                        <Icon
+                                            size={16}
+                                            color="#ADB5BD"
+                                            name="headphones-22x"
+                                            family="NowExtra"
+                                            style={styles.inputIcons}
+                                        />
+                                    }
+                                    value={this.state.contact_phone}
+                                    onChangeText={contact_phone=>this.setState({contact_phone})}/>
+                              </Block>
+          <Block row middle style={styles.rows, {paddingTop: 10}}>
+            <Block center>
+                <Button color="primary" round style={styles.createButton} onPress={()=>{this.InsertRecord()}}>
+                    <Text
+                        style={{ fontFamily: 'montserrat-bold' }}
+                        size={14}
+                        color={nowTheme.COLORS.WHITE}>
+                            Save concert
+                    </Text>
+                </Button>
+            </Block>
+          </Block>
       </ScrollView>
     );
   }
@@ -449,7 +460,7 @@ const styles = StyleSheet.create({
     paddingBottom: theme.SIZES.BASE / 2
   },
   rows: {
-    height: theme.SIZES.BASE * 3.5,
+    height: theme.SIZES.BASE * 3.8,
     paddingHorizontal: theme.SIZES.BASE
   },
   rows_big: {
@@ -476,6 +487,15 @@ const styles = StyleSheet.create({
           borderRadius: 21.5,
           width: width-40
         },
+    inputs_select: {
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#E3E3E3',
+              borderRadius: 25,
+              width: width-40,
+              paddingHorizontal: 10,
+              paddingVertical: 0
+            },
     inputIcons: {
         marginRight: 12,
         color: nowTheme.COLORS.ICON_INPUT

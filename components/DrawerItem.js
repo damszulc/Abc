@@ -51,7 +51,7 @@ class DrawerItem extends React.Component {
                   style={{ opacity: 0.5 }}
                 />
               );
-      case 'Technique':
+      case 'Technical Support':
               return (
                 <Icon
                   name="paper"
@@ -71,7 +71,7 @@ class DrawerItem extends React.Component {
                         style={{ opacity: 0.5 }}
                       />
                     );
-      case 'Add Technique':
+      case 'Add Technical Support':
                           return (
                             <Icon
                               name="simple-add2x"
@@ -168,7 +168,7 @@ class DrawerItem extends React.Component {
         style={{ height: 60 }}
         onPress={() =>
         title == 'LOGOUT' ?
-            AsyncStorage.setItem('logged_user_id', '0') && navigation.navigate('Onboarding') :
+            (AsyncStorage.setItem('logged_user_id', '0') && navigation.navigate('Onboarding')) :
             navigation.navigate(title)
         }
       >

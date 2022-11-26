@@ -16,7 +16,6 @@ import Images from "../constants/Images";
 class Pro extends React.Component {
   render() {
     const { navigation } = this.props;
-    console.log(this.props);
 
     return (
       <Block flex style={styles.container}>

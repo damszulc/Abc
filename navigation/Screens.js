@@ -15,6 +15,7 @@ import Concerts from '../screens/Concerts';
 import Onboarding from '../screens/Onboarding';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
+import Showtech from '../screens/Showtech';
 import React from 'react';
 import Register from '../screens/Register';
 import SettingsScreen from '../screens/Settings';
@@ -85,16 +86,35 @@ function TechniqueStack(props) {
         headerShown: 'screen',
       }}
     >
-      <Stack.Screen
-        name="Technical support"
-        component={Technique}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title="Technical support" navigation={navigation} scene={scene} />
-          ),
-          backgroundColor: '#FFFFFF',
-        }}
-      />
+    <Stack.Screen
+            name="Technical support"
+            component={Technique}
+            options={{
+              header: ({ navigation, scene }) => (
+                <Header title="Technical support" search options navigation={navigation} scene={scene} />
+              )
+            }}
+          />
+          <Stack.Screen
+            name="Pro"
+            component={Pro}
+            options={{
+              header: ({ navigation, scene }) => (
+                <Header title="" back white transparent navigation={navigation} scene={scene} />
+              ),
+              headerTransparent: true,
+            }}
+          />
+          <Stack.Screen
+                  name="Showtech"
+                  component={Showtech}
+                  options={{
+                    header: ({ navigation, scene }) => (
+                      <Header title="" title="Technical support info" back scene={scene} />
+                    ),
+                    headerTransparent: false,
+                  }}
+                />
     </Stack.Navigator>
   );
 }
@@ -109,7 +129,7 @@ function AddConcertStack(props) {
       }}
     >
       <Stack.Screen
-        name="Add Concert"
+        name="Add Concert2"
         component={AddConcert}
         options={{
           header: ({ navigation, scene }) => (
@@ -118,6 +138,16 @@ function AddConcertStack(props) {
           backgroundColor: '#FFFFFF',
         }}
       />
+       <Stack.Screen
+              name="Concerts2"
+              component={Concerts}
+              options={{
+                header: ({ navigation, scene }) => (
+                  <Header title="Concerts" search options navigation={navigation} scene={scene} />
+                ),
+                cardStyle: { backgroundColor: '#FFFFFF' },
+              }}
+            />
     </Stack.Navigator>
   );
 }
@@ -125,18 +155,18 @@ function AddConcertStack(props) {
 function AddTechniqueStack(props) {
   return (
     <Stack.Navigator
-      initialRouteName="Add Technique"
+      initialRouteName="Add Technical Support"
       screenOptions={{
         mode: 'card',
         headerShown: 'screen',
       }}
     >
       <Stack.Screen
-        name="Add Technique"
+        name="Add Technical Support 2"
         component={AddTechnqiue}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Add Technique" navigation={navigation} scene={scene} />
+            <Header title="Add Technical Support" navigation={navigation} scene={scene} />
           ),
           backgroundColor: '#FFFFFF',
         }}
@@ -179,7 +209,7 @@ function ProfileStack(props) {
       }}
     >
       <Stack.Screen
-        name="Profile"
+        name="Profile 2"
         component={Profile}
         options={{
           header: ({ navigation, scene }) => (
@@ -203,6 +233,29 @@ function ProfileStack(props) {
   );
 }
 
+function ShowtechStack(props) {
+  return (
+    <Stack.Navigator
+      initialRouteName="Showtech"
+      screenOptions={{
+        mode: 'card',
+        headerShown: 'screen',
+      }}
+    >
+     <Stack.Screen
+                   name="Profile"
+                   component={Profile}
+                   options={{
+                     header: ({ navigation, scene }) => (
+                       <Header title="" title="Concert info" back scene={scene} />
+                     ),
+                     headerTransparent: false,
+                   }}
+                 />
+    </Stack.Navigator>
+  );
+}
+
 function ConcertsStack(props) {
   return (
     <Stack.Navigator
@@ -217,8 +270,7 @@ function ConcertsStack(props) {
         options={{
           header: ({ navigation, scene }) => (
             <Header title="Concerts" search options navigation={navigation} scene={scene} />
-          ),
-          cardStyle: { backgroundColor: '#FFFFFF' },
+          )
         }}
       />
       <Stack.Screen
@@ -236,11 +288,12 @@ function ConcertsStack(props) {
               component={Profile}
               options={{
                 header: ({ navigation, scene }) => (
-                  <Header title="" title="Concert info" back navigation={navigation} scene={scene} />
+                  <Header title="" title="Concert info" back scene={scene} />
                 ),
                 headerTransparent: false,
               }}
             />
+
     </Stack.Navigator>
   );
 }
@@ -277,7 +330,7 @@ function AppStack(props) {
         backgroundColor: nowTheme.COLORS.PRIMARY,
         width: width * 0.8,
       }}
-      drawerContentOptions={{
+      screenOptions={{
         activeTintcolor: nowTheme.COLORS.WHITE,
         inactiveTintColor: nowTheme.COLORS.WHITE,
         activeBackgroundColor: 'transparent',
@@ -300,7 +353,7 @@ function AppStack(props) {
       initialRouteName="Concerts"
     >
       <Drawer.Screen
-        name="Concerts"
+        name="Concerts3"
         component={ConcertsStack}
         options={{
           headerShown: false,
@@ -328,7 +381,7 @@ function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Technique"
+        name="Technical Support"
         component={TechniqueStack}
         options={{
           headerShown: false,
@@ -337,6 +390,13 @@ function AppStack(props) {
       <Drawer.Screen
         name="Profile"
         component={ProfileStack}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Showtech"
+        component={ShowtechStack}
         options={{
           headerShown: false,
         }}
@@ -356,7 +416,7 @@ function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Add Technique"
+        name="Add Technical Support"
         component={AddTechniqueStack}
         options={{
           headerShown: false,

@@ -7,7 +7,7 @@ import { nowTheme } from '../constants';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
 
-class Card extends React.Component {
+class CardT extends React.Component {
   async addToCalendar(title, startDateUTC, endUTC) {
     const eventConfig = {
         title: title,
@@ -50,22 +50,17 @@ class Card extends React.Component {
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Profile', {itemId: item.concert_id})}>
-          <Block flex style={imgContainer}>
-            <Image resizeMode="cover" source={{ uri: item.thumbnail }} style={imageStyles} />
-          </Block>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Profile', {itemId: item.concert_id})}>
-          <Block flex space="between" style={styles.cardDescription}>
-            <Block flex>
+        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Showtech', {itemId: item.technique_id})}>
+          <Block row space="between" style={styles.cardDescription}>
+
               <Text
                 style={{ fontFamily: 'montserrat-regular' }}
                 size={14}
                 style={titleStyles}
                 color={nowTheme.COLORS.SECONDARY}
-              >{item.team_name.toUpperCase()}{"\n"}{item.concert_date}{"\n"}{item.place}</Text>
-            </Block>
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Add to calendar</Button>
+              >{item.event_name}{"\n"}{item.event_date}{"\n"}{item.place}</Text>
+
+             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.event_name, Moment(item.event_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.event_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Add to calendar</Button>
           </Block>
         </TouchableWithoutFeedback>
       </Block>
@@ -73,7 +68,7 @@ class Card extends React.Component {
   }
 }
 
-Card.propTypes = {
+CardT.propTypes = {
   item: PropTypes.object,
   horizontal: PropTypes.bool,
   full: PropTypes.bool,
@@ -93,9 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 4
   },
   cardTitle: {
-    paddingHorizontal: 9,
+    paddingHorizontal: 15,
     paddingTop: 7,
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   cardDescription: {
     padding: theme.SIZES.BASE / 2
@@ -135,7 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     width: 130,
-    height: 30
+    height: 30,
   }
 });
 
@@ -150,5 +145,5 @@ export default function(props) {
   const ctaRight = props.ctaRight;
   const titleStyle = props.titleStyle;
 
-  return <Card props={props} navigation={navigation} item={item} horizontal={horizontal} full={full} style={style} ctaColor={ctaColor} imageStyle={imageStyle} ctaRight={ctaRight} titleStyle={titleStyle} />;
+  return <CardT props={props} navigation={navigation} item={item} horizontal={horizontal} full={full} style={style} ctaColor={ctaColor} imageStyle={imageStyle} ctaRight={ctaRight} titleStyle={titleStyle} />;
 }

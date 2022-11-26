@@ -1,7 +1,7 @@
 {
-  "name": "now-ui-react-native",
+  "name": "anseba-app",
   "version": "1.5.0",
-  "description": "Now UI React Native, based on Now UI Design System. Coded by Creative Tim",
+  "description": "Anseba App. Created By j7technologies",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -10,14 +10,12 @@
     "eject": "expo eject",
     "lint": "eslint *.js **/*.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/now-ui-react-native.git"
-  },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/datetimepicker": "^6.7.0",
     "@react-native-masked-view/masked-view": "0.2.7",
+    "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "6.3.1",
     "@react-navigation/compat": "5.1.25",
     "@react-navigation/drawer": "6.4.1",
@@ -36,6 +34,7 @@
     "react": "18.0.0",
     "react-dom": "^18.2.0",
     "react-native": "0.69.6",
+    "react-native-add-calendar-event": "^4.0.0",
     "react-native-dropdown-picker": "^5.4.3",
     "react-native-dropdown-select-list": "^2.0.2",
     "react-native-gesture-handler": "~2.5.0",
@@ -55,26 +54,8 @@
     "babel-preset-expo": "~9.2.0"
   },
   "keywords": [
-    "now react native",
-    "now design system",
-    "now app react native",
-    "now iOS",
-    "react native iOS",
-    "creative tim",
-    "now Android",
-    "react native ui kit",
-    "react native expo",
-    "freebie",
-    "react native now design",
-    "react native galio",
-    "galio now pro",
-    "galio react native free app",
-    "now expo react native",
-    "react native ui template"
+    "anseba app"
   ],
-  "author": "Creative Tim <hello@creative-tim.com> (https://www.creative-tim.com/)",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/now-ui-react-native/issues"
-  },
-  "homepage": "https://demos.creative-tim.com/now-ui-react-native"
+  "author": "j7technologies",
+  "homepage": "https://j7.pl"
 }

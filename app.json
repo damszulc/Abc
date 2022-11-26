@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Now UI React Native",
-    "slug": "now-ui-react-native",
+    "name": "Anseba App",
+    "slug": "anseba-app",
     "privacy": "public",
     "platforms": [
       "ios",
@@ -22,12 +22,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.marmozeta.ansebaapp"
     },
-    "description": "Now UI React Native, based on Now UI Design System. Coded by Creative Tim",
+    "description": "Anseba App. Created by j7technologies",
+    "android": {
+      "package": "com.marmozeta.ansebaapp"
+    },
     "extra": {
       "eas": {
-        "projectId": "1a81de02-93a0-49e7-94e6-090baa8daa3e"
+        "projectId": "8951cdc2-afde-4970-bf90-3eb930c85521"
       }
     }
   }

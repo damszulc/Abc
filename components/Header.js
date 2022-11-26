@@ -129,7 +129,7 @@ class Header extends React.Component {
         <Button
           shadowless
           style={[styles.tab]}
-          onPress={() => console.log(navigation.navigate('Pro'))}
+          onPress={() => console.log(navigation.navigate('Concerts'))}
         >
           <Block row middle>
             <Icon
@@ -144,6 +144,20 @@ class Header extends React.Component {
             </Text>
           </Block>
         </Button>
+         <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Technical Support')}>
+                  <Block row middle>
+                    <Icon
+                      size={18}
+                      name="bag-162x"
+                      family="NowExtra"
+                      style={{ paddingRight: 8 }}
+                      color={nowTheme.COLORS.HEADER}
+                    />
+                    <Text style={{ fontFamily: 'montserrat-regular' }} size={16} style={styles.tabTitle}>
+                      {optionRight || 'Technical support'}
+                    </Text>
+                  </Block>
+                </Button>
       </Block>
     );
   };

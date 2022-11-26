@@ -17,8 +17,8 @@ function CustomDrawerContent({ drawerPosition, navigation, profile, focused, sta
       userType = value;
     });
   const insets = useSafeArea();
-  const screens = ['Concerts'];
-  const screens_management = ['Add Concert'];
+  const screens = ['Concerts', 'Technical Support'];
+  const screens_management = ['Add Concert', 'Add Technical Support'];
   return (
     <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
       <Block style={styles.header}>
@@ -64,13 +64,13 @@ function CustomDrawerContent({ drawerPosition, navigation, profile, focused, sta
             </Text>
           </Block>
 : null }
-          {userType == 'admin' ? screens_management.map((item, index) => {
+          {userType == 'admin' ? screens_management.map((item, index_m) => {
                       return (
                         <DrawerCustomItem
                           title={item}
-                          key={index}
+                          key={index_m}
                           navigation={navigation}
-                          focused={state.index === index ? true : false}
+                          focused={state.index_m === index_m ? true : false}
                         />
                       );
                     }) : null}

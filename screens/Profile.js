@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, StatusBar} from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, StatusBar, Linking, View, ActivityIndicator} from 'react-native';
 import { Block, Text, theme, Button as GaButton } from 'galio-framework';
 
 import { Button } from '../components';
@@ -29,7 +29,6 @@ class Profile extends React.Component {
     var Data = { itemId: this.props.route.params?.itemId };
       const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_concerts.php', {method: 'POST', body: JSON.stringify(Data)});
       const json = await response.json();
-      console.log(json);
       this.setState({ data: json.articles });
     } catch (error) {
       console.log(error);
@@ -59,7 +58,51 @@ class Profile extends React.Component {
              </Block>
           </Block> : null);
 
-  return (
+    let follow = (data.follow!='') ? <Button style={{ width: 114, height: 44, marginHorizontal: 5, elevation: 0 }} textStyle={{ fontSize: 16 }} round
+                                                     onPress={() => {Linking.openURL(data.follow)}}>
+                                                     Follow
+                                                   </Button> : null;
+
+    let twitter = (data.twitter!='') ? <GaButton
+                                                           round
+                                                           onlyIcon
+                                                           shadowless
+                                                           icon="twitter"
+                                                           iconFamily="Font-Awesome"
+                                                           iconColor={nowTheme.COLORS.WHITE}
+                                                           iconSize={nowTheme.SIZES.BASE * 1.375}
+                                                           color={'#888888'}
+                                                           style={[styles.social, styles.shadow]}
+                                                           onPress={() => {Linking.openURL(data.twitter)}}
+                                                         /> : null;
+    let pinterest = (data.pinterest!='') ? <GaButton
+                                                          round
+                                                          onlyIcon
+                                                          shadowless
+                                                          icon="pinterest"
+                                                          iconFamily="Font-Awesome"
+                                                          iconColor={nowTheme.COLORS.WHITE}
+                                                          iconSize={nowTheme.SIZES.BASE * 1.375}
+                                                          color={'#888888'}
+                                                          style={[styles.social, styles.shadow]}
+                                                          onPress={() => {Linking.openURL(data.pinterest)}}
+                                                        /> : null;
+    let facebook = (data.facebook!='') ? <GaButton
+                                                             round
+                                                             onlyIcon
+                                                             shadowless
+                                                             icon="facebook"
+                                                             iconFamily="Font-Awesome"
+                                                             iconColor={nowTheme.COLORS.WHITE}
+                                                             iconSize={nowTheme.SIZES.BASE * 1.375}
+                                                             color={'#888888'}
+                                                             style={[styles.social, styles.shadow]}
+                                                             onPress={() => {Linking.openURL(data.facebook)}}
+                                                           /> : null;
+
+  return ( isLoading ? <View style={{flex: 1, justifyContent: 'center'}}>
+                         <ActivityIndicator size="large" />
+                       </View> :
   <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.settings}
@@ -107,39 +150,18 @@ class Profile extends React.Component {
             <Block
               middle
               row
-              style={{ position: 'absolute', width: width, top: height * 0.4, zIndex: 99 }}
+              style={{ position: 'absolute', width: width, top: height * 0.45, zIndex: 99 }}
             >
-              <Button style={{ width: 114, height: 44, marginHorizontal: 5, elevation: 0 }} textStyle={{ fontSize: 16 }} round>
-                Follow
-              </Button>
-              <GaButton
-                round
-                onlyIcon
-                shadowless
-                icon="twitter"
-                iconFamily="Font-Awesome"
-                iconColor={nowTheme.COLORS.WHITE}
-                iconSize={nowTheme.SIZES.BASE * 1.375}
-                color={'#888888'}
-                style={[styles.social, styles.shadow]}
-              />
-              <GaButton
-                round
-                onlyIcon
-                shadowless
-                icon="pinterest"
-                iconFamily="Font-Awesome"
-                iconColor={nowTheme.COLORS.WHITE}
-                iconSize={nowTheme.SIZES.BASE * 1.375}
-                color={'#888888'}
-                style={[styles.social, styles.shadow]}
-              />
+              {follow}
+              {twitter}
+              {pinterest}
+              {facebook}
             </Block>
           </Block>
         </ImageBackground>
       </Block>
       <Block />
-      <Block flex={0.4} style={{ padding: theme.SIZES.BASE, marginTop: -480}}>
+      <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: -300}}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Block flex style={{ marginTop: 0 }}>
             <Block row left>
