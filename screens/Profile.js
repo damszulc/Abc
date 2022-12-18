@@ -53,14 +53,14 @@ class Profile extends React.Component {
     let contact_phone = (userType == 'admin' || userType == 'tour_manager' ?
           <Block flex style={{ marginTop: 5 }}>
              <Block row left>
-                 <Text style={[styles.label]}>Contact phone:</Text>
+                 <Text style={[styles.label]}>Telefon kontaktowy:</Text>
                  <Text size={14} muted style={[styles.value, styles.inline]}>{data.contact_phone}</Text>
              </Block>
           </Block> : null);
 
     let follow = (data.follow!='') ? <Button style={{ width: 114, height: 44, marginHorizontal: 5, elevation: 0 }} textStyle={{ fontSize: 16 }} round
                                                      onPress={() => {Linking.openURL(data.follow)}}>
-                                                     Follow
+                                                     Zobacz
                                                    </Button> : null;
 
     let twitter = (data.twitter!='') ? <GaButton
@@ -120,10 +120,10 @@ class Profile extends React.Component {
         >
           <Block flex style={styles.profileCard}>
             <Block style={{ position: 'absolute', width: width, zIndex: 5, paddingHorizontal: 20 }}>
-              <Block middle style={{ top: height * 0.05 }}>
+              <Block middle style={{ top: height * 0.03 }}>
                 <Image source={{ uri: data.thumbnail }} style={styles.avatar} />
               </Block>
-              <Block style={{ top: height * 0.08 }}>
+              <Block style={{ top: height * 0.05 }}>
                 <Block middle >
                   <Text
                     style={{
@@ -137,10 +137,10 @@ class Profile extends React.Component {
                     {data.team_name}
                   </Text>
                    <Block row>
-                        <Text size={15} color="grey" style={[styles.top_text]}>Place:</Text>
+                        <Text size={15} color="grey" style={[styles.top_text]}>Miejsce:</Text>
                         <Text size={15} color="black" style={[styles.top_text]}>{data.place}</Text>
                   </Block>
-                  <Text size={15} color="grey" style={[styles.top_text]}>Concert date and time:</Text>
+                  <Text size={15} color="grey" style={[styles.top_text]}>Data i godzina koncertu:</Text>
                   <Text size={15} color="black" style={[styles.top_text]}>{data.concert_date}</Text>
                 </Block>
               </Block>
@@ -150,7 +150,7 @@ class Profile extends React.Component {
             <Block
               middle
               row
-              style={{ position: 'absolute', width: width, top: height * 0.45, zIndex: 99 }}
+              style={{ position: 'absolute', width: width, top: height * 0.42, zIndex: 99 }}
             >
               {follow}
               {twitter}
@@ -161,29 +161,29 @@ class Profile extends React.Component {
         </ImageBackground>
       </Block>
       <Block />
-      <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: -300}}>
+      <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: -height * 0.5}}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Block flex style={{ marginTop: 0 }}>
             <Block row left>
-                <Text style={[styles.label]}>Sample date and time:</Text>
+                <Text style={[styles.label]}>Data i godzina próby:</Text>
                 <Text size={14} muted style={[styles.value, styles.inline]}>{data.sample_date}</Text>
             </Block>
           </Block>
           <Block flex style={{ marginTop: 5 }}>
             <Block row left>
-                <Text style={[styles.label]}>Number of sets:</Text>
+                <Text style={[styles.label]}>Liczba setów:</Text>
                 <Text size={14} muted style={[styles.value, styles.inline]}>{data.sets_number}</Text>
             </Block>
           </Block>
           <Block flex style={{ marginTop: 5 }}>
             <Block row left>
-                <Text style={[styles.label]}>Event type:</Text>
+                <Text style={[styles.label]}>Rodzaj koncertu:</Text>
                 <Text size={14} muted style={[styles.value, styles.inline]}>{data.event_type}</Text>
             </Block>
           </Block>
           <Block flex style={{ marginTop: 5 }}>
             <Block left>
-                <Text style={[styles.label]}>Event details</Text>
+                <Text style={[styles.label]}>Opis</Text>
                 <Text size={14} muted style={[styles.value]}>{data.event_details} </Text>
             </Block>
           </Block>

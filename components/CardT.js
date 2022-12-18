@@ -58,9 +58,9 @@ class CardT extends React.Component {
                 size={14}
                 style={titleStyles}
                 color={nowTheme.COLORS.SECONDARY}
-              >{item.event_name}{"\n"}{item.event_date}{"\n"}{item.place}</Text>
+              >{item.support_name} {"\n"}{item.assembly_date}{"\n"}{item.place}</Text>
 
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.event_name, Moment(item.event_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.event_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Add to calendar</Button>
+             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.support_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Dodaj do kalendarza</Button>
           </Block>
         </TouchableWithoutFeedback>
       </Block>

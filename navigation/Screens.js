@@ -80,18 +80,18 @@ function ArticlesStack(props) {
 function TechniqueStack(props) {
   return (
     <Stack.Navigator
-      initialRouteName="Technical support"
+      initialRouteName="Audio Visual Support"
       screenOptions={{
         mode: 'card',
         headerShown: 'screen',
       }}
     >
     <Stack.Screen
-            name="Technical support"
+            name="Audio Visual Support"
             component={Technique}
             options={{
               header: ({ navigation, scene }) => (
-                <Header title="Technical support" search options navigation={navigation} scene={scene} />
+                <Header title="Montaż audio-wizualny" search options navigation={navigation} scene={scene} />
               )
             }}
           />
@@ -110,7 +110,7 @@ function TechniqueStack(props) {
                   component={Showtech}
                   options={{
                     header: ({ navigation, scene }) => (
-                      <Header title="" title="Technical support info" back scene={scene} />
+                      <Header title="" title="Informacje o montażu" back scene={scene} />
                     ),
                     headerTransparent: false,
                   }}
@@ -133,7 +133,7 @@ function AddConcertStack(props) {
         component={AddConcert}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Add Concert" navigation={navigation} scene={scene} />
+            <Header title="Dodaj koncert" navigation={navigation} scene={scene} />
           ),
           backgroundColor: '#FFFFFF',
         }}
@@ -143,7 +143,7 @@ function AddConcertStack(props) {
               component={Concerts}
               options={{
                 header: ({ navigation, scene }) => (
-                  <Header title="Concerts" search options navigation={navigation} scene={scene} />
+                  <Header title="Koncerty" search options navigation={navigation} scene={scene} />
                 ),
                 cardStyle: { backgroundColor: '#FFFFFF' },
               }}
@@ -155,18 +155,18 @@ function AddConcertStack(props) {
 function AddTechniqueStack(props) {
   return (
     <Stack.Navigator
-      initialRouteName="Add Technical Support"
+      initialRouteName="Add Audio Visual Support"
       screenOptions={{
         mode: 'card',
         headerShown: 'screen',
       }}
     >
       <Stack.Screen
-        name="Add Technical Support 2"
+        name="Add Audio Visual Support 2"
         component={AddTechnqiue}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Add Technical Support" navigation={navigation} scene={scene} />
+            <Header title="Dodaj montaż" navigation={navigation} scene={scene} />
           ),
           backgroundColor: '#FFFFFF',
         }}
@@ -247,7 +247,7 @@ function ShowtechStack(props) {
                    component={Profile}
                    options={{
                      header: ({ navigation, scene }) => (
-                       <Header title="" title="Concert info" back scene={scene} />
+                       <Header title="Informacje o koncercie" back scene={scene} />
                      ),
                      headerTransparent: false,
                    }}
@@ -269,7 +269,7 @@ function ConcertsStack(props) {
         component={Concerts}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Concerts" search options navigation={navigation} scene={scene} />
+            <Header title="Koncerty" search options navigation={navigation} scene={scene} />
           )
         }}
       />
@@ -288,7 +288,7 @@ function ConcertsStack(props) {
               component={Profile}
               options={{
                 header: ({ navigation, scene }) => (
-                  <Header title="" title="Concert info" back scene={scene} />
+                  <Header title="Informacje o koncercie" back scene={scene} />
                 ),
                 headerTransparent: false,
               }}
@@ -312,7 +312,7 @@ function RegisterStack(props) {
         component={Register}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Register" navigation={navigation} scene={scene} />
+            <Header title="Logowanie" navigation={navigation} scene={scene} />
           ),
           backgroundColor: '#FFFFFF',
         }}
@@ -381,7 +381,7 @@ function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Technical Support"
+        name="Audio Visual Support"
         component={TechniqueStack}
         options={{
           headerShown: false,
@@ -416,7 +416,7 @@ function AppStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Add Technical Support"
+        name="Add Audio Visual Support"
         component={AddTechniqueStack}
         options={{
           headerShown: false,

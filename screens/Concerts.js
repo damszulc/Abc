@@ -45,7 +45,7 @@ export default class Concerts extends Component {
                 right
                 color="black"
                 style={styles.search}
-                placeholder="Search in concerts..."
+                placeholder="Szukaj w koncertach..."
                 placeholderTextColor={'#8898AA'}
                 onChangeText={search=>this.setState({search})}
                 iconContent={

@@ -51,7 +51,7 @@ class DrawerItem extends React.Component {
                   style={{ opacity: 0.5 }}
                 />
               );
-      case 'Technical Support':
+      case 'Audio Visual Support':
               return (
                 <Icon
                   name="paper"
@@ -71,7 +71,7 @@ class DrawerItem extends React.Component {
                         style={{ opacity: 0.5 }}
                       />
                     );
-      case 'Add Technical Support':
+      case 'Add Audio Visual Support':
                           return (
                             <Icon
                               name="simple-add2x"
@@ -155,6 +155,16 @@ class DrawerItem extends React.Component {
     }
   };
 
+        getNewTitle(title) {
+            switch(title) {
+                case 'Concerts': return 'Koncerty';
+                case 'Audio Visual Support': return 'Montaż audio-wizualny';
+                case 'Add Concert': return 'Dodaj koncert';
+                case 'Add Audio Visual Support': return 'Dodaj montaż';
+                case 'LOGOUT': return 'WYLOGUJ SIĘ';
+            }
+        }
+
   render() {
     const { focused, title, navigation } = this.props;
 
@@ -162,6 +172,7 @@ class DrawerItem extends React.Component {
       styles.defaultStyle,
       focused ? [styles.activeStyle, styles.shadow] : null,
     ];
+
 
     return (
       <TouchableOpacity
@@ -187,7 +198,7 @@ class DrawerItem extends React.Component {
               bold={focused ? true : false}
               color={focused ? nowTheme.COLORS.PRIMARY : 'black'}
             >
-              {title}
+              {this.getNewTitle(title)}
             </Text>
           </Block>
         </Block>

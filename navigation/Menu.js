@@ -17,8 +17,8 @@ function CustomDrawerContent({ drawerPosition, navigation, profile, focused, sta
       userType = value;
     });
   const insets = useSafeArea();
-  const screens = ['Concerts', 'Technical Support'];
-  const screens_management = ['Add Concert', 'Add Technical Support'];
+  const screens = ['Concerts', 'Audio Visual Support'];
+  const screens_management = ['Add Concert', 'Add Audio Visual Support'];
   return (
     <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
       <Block style={styles.header}>
@@ -60,7 +60,7 @@ function CustomDrawerContent({ drawerPosition, navigation, profile, focused, sta
                 fontSize: 12,
               }}
             >
-              APP MANAGEMENT
+              ZARZĄDZAJ APLIKACJĄ
             </Text>
           </Block>
 : null }

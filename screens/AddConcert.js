@@ -28,12 +28,13 @@ export default class AddConcert extends React.Component {
         data_teams_managers: [],
         isLoading: true,
         team_id: 0,
+        artist_name: '',
         place: '',
         concert_date: '',
         concert_time: '',
         duration: 0,
-        sample_date: '',
-        sample_time: '',
+        rehearsal_date: '',
+        rehearsal_time: '',
         sets_number: 0,
         event_details: '',
         event_type_id: 0,
@@ -49,12 +50,13 @@ export default class AddConcert extends React.Component {
   }
   InsertRecord=()=>{
     var TeamId = this.state.team_id;
+    var ArtistName = this.state.artist_name;
     var Place = this.state.place;
     var ConcertDate = this.state.concert_date;
     var ConcertTime = this.state.concert_time;
     var Duration = this.state.duration;
-    var SampleDate = this.state.sample_date;
-    var SampleTime = this.state.sample_time;
+    var RehearsalDate = this.state.rehearsal_date;
+    var RehearsalTime = this.state.rehearsal_time;
     var SetsNumber = this.state.sets_number;
     var EventDetails = this.state.event_details;
     var EventTypeId = this.state.event_type_id;
@@ -62,8 +64,8 @@ export default class AddConcert extends React.Component {
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-    if (TeamId.value==0 || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
-      alert("Required field is missing !!!");
+    if ((TeamId.value==0 && ArtistName.length==0) || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
+      alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
     }else{
       var APIURL = "http://srv36013.seohost.com.pl/anseba/save_concert.php";
 
@@ -74,12 +76,13 @@ export default class AddConcert extends React.Component {
 
       var Data ={
         TeamId: TeamId,
+        ArtistName: ArtistName,
         Place: Place,
         ConcertDate: ConcertDate,
         ConcertTime: ConcertTime,
         Duration: Duration,
-        SampleDate: SampleDate,
-        SampleTime: SampleTime,
+        RehearsalDate: RehearsalDate,
+        RehearsalTime: RehearsalTime,
         SetsNumber: SetsNumber,
         EventDetails: EventDetails,
         EventTypeId: EventTypeId,
@@ -136,23 +139,25 @@ export default class AddConcert extends React.Component {
 
         return (
             <>
-                <Input
-                    placeholder="Concert date *"
-                    style={styles.inputs_half}
-                    iconContent={
-                        <Icon
-                            size={16}
+                <Button
+                    style={styles.inputs_half} color='#ADB5BD'
+                    onPress={() => setShowPicker(true)}>
+                    <Block row>
+                        <Icon size={16}
                             color="#ADB5BD"
                             name="calendar-602x"
                             family="NowExtra"
                             style={styles.inputIcons}
                             onPress={() => setShowPicker(true)}
-
                         />
-                    }
-                    value={this.state.concert_date}
-                    onClick={() => setShowPicker(true) || console.log(showPicker)}
-                />
+                        <Text
+                            style={{ color: '#ADB5BD' }}
+                            size={14}
+                            color={nowTheme.COLORS.WHITE}>
+                            {this.state.concert_date != '' ? this.state.concert_date : 'Data koncertu *'}
+                        </Text>
+                    </Block>
+                </Button>
                 { showPicker ? (
                      <DateTimePicker
                         testID="date-picker"
@@ -173,22 +178,25 @@ export default class AddConcert extends React.Component {
 
                 return (
                     <>
-                        <Input
-                             placeholder="Concert time *"
-                             style={styles.inputs_half}
-                             iconContent={
-                                 <Icon
-                                    size={16}
+                        <Button
+                            style={styles.inputs_half} color='#ADB5BD'
+                            onPress={() => setShowPicker(true)}>
+                            <Block row>
+                                <Icon size={16}
                                     color="#ADB5BD"
                                     name="time-alarm2x"
                                     family="NowExtra"
                                     style={styles.inputIcons}
                                     onPress={() => setShowPicker(true)}
-                                 />
-                             }
-                            value={this.state.concert_time}
-                             onClick={() => setShowPicker(true) || console.log(showPicker)}
-                        />
+                                />
+                                <Text
+                                    style={{ color: '#ADB5BD' }}
+                                    size={14}
+                                    color={nowTheme.COLORS.WHITE}>
+                                    {this.state.concert_time != '' ? this.state.concert_time : 'Godzina koncertu *'}
+                                </Text>
+                            </Block>
+                        </Button>
                         { showPicker ? (
                              <DateTimePicker
                                 testID="time-picker"
@@ -203,35 +211,38 @@ export default class AddConcert extends React.Component {
                 );
             };
 
-   const InputWithDatePickerSample = (props) => {
+   const InputWithDatePickerRehearsal = (props) => {
            const [date, setDate] = React.useState(new Date());
            const [showPicker, setShowPicker] = React.useState(false);
 
            return (
                <>
-                   <Input
-                       placeholder="Sample date"
-                       style={styles.inputs_half}
-                       iconContent={
-                           <Icon
-                               size={16}
-                               color="#ADB5BD"
-                               name="calendar-602x"
-                               family="NowExtra"
-                               style={styles.inputIcons}
-                               onPress={() => setShowPicker(true)}
-                           />
-                       }
-                        value={this.state.sample_date}
-                       onClick={() => setShowPicker(true) || console.log(showPicker)}
-                   />
+                    <Button
+                        style={styles.inputs_half} color='#ADB5BD'
+                        onPress={() => setShowPicker(true)}>
+                        <Block row>
+                            <Icon size={16}
+                                color="#ADB5BD"
+                                name="calendar-602x"
+                                family="NowExtra"
+                                style={styles.inputIcons}
+                                onPress={() => setShowPicker(true)}
+                            />
+                            <Text
+                                style={{ color: '#ADB5BD' }}
+                                size={14}
+                                color={nowTheme.COLORS.WHITE}>
+                                {this.state.rehearsal_date != '' ? this.state.rehearsal_date : 'Data próby'}
+                            </Text>
+                        </Block>
+                    </Button>
                    { showPicker ? (
                         <DateTimePicker
                            testID="date-picker"
                            value={new Date(date)}
                            mode="date"
                            is24Hour={true}
-                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({sample_date: Moment(date).format('DD/MM/YYYY')})}
+                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
                            maximumDate={new Date()}
                          />
                    ) : null }
@@ -239,35 +250,38 @@ export default class AddConcert extends React.Component {
            );
        };
 
-       const InputWithTimePickerSample = () => {
+       const InputWithTimePickerRehearsal = () => {
                    const [time, setTime] = React.useState(new Date());
                    const [showPicker, setShowPicker] = React.useState(false);
 
                    return (
                        <>
-                           <Input
-                                placeholder="Sample time"
-                                style={styles.inputs_half}
-                                iconContent={
-                                    <Icon
-                                       size={16}
-                                       color="#ADB5BD"
-                                       name="time-alarm2x"
-                                       family="NowExtra"
-                                       style={styles.inputIcons}
-                                       onPress={() => setShowPicker(true)}
+                            <Button
+                                style={styles.inputs_half} color='#ADB5BD'
+                                onPress={() => setShowPicker(true)}>
+                                <Block row>
+                                    <Icon size={16}
+                                        color="#ADB5BD"
+                                        name="time-alarm2x"
+                                        family="NowExtra"
+                                        style={styles.inputIcons}
+                                        onPress={() => setShowPicker(true)}
                                     />
-                                }
-                                value={this.state.sample_time}
-                                onClick={() => setShowPicker(true) || console.log(showPicker)}
-                           />
+                                    <Text
+                                        style={{ color: '#ADB5BD' }}
+                                        size={14}
+                                        color={nowTheme.COLORS.WHITE}>
+                                        {this.state.rehearsal_time != '' ? this.state.rehearsal_time : 'Godzina próby'}
+                                    </Text>
+                                </Block>
+                            </Button>
                            { showPicker ? (
                                 <DateTimePicker
                                    testID="time-picker"
                                    value={new Date(time)}
                                    mode="time"
                                    is24Hour={true}
-                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({sample_time: Moment(time).format('HH:mm')})}
+                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
                                    timeZoneOffsetInSeconds={3600}
                                  />
                            ) : null }
@@ -282,7 +296,7 @@ export default class AddConcert extends React.Component {
       >
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-                Basic information
+                Dane podstawowe
             </Text>
           </Block>
           <Block middle>
@@ -290,7 +304,7 @@ export default class AddConcert extends React.Component {
                 <Picker
                     selectedValue={this.state.team_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({team_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Select team from list *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz zespół z listy' value='0' />
                         { data_teams.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -298,8 +312,25 @@ export default class AddConcert extends React.Component {
             </Block>
           </Block>
           <Block row middle style={styles.rows}>
+                      <Input
+                          placeholder="lub podaj nazwę wykonawcy"
+                          style={styles.inputs}
+                          iconContent={
+                              <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="briefcase-242x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                              />
+                          }
+                          value={this.state.artist_name}
+                          onChangeText={artist_name=>this.setState({artist_name})}
+                      />
+                    </Block>
+          <Block row middle style={styles.rows}>
             <Input
-                placeholder="Concert place *"
+                placeholder="Miejsce koncertu *"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -329,7 +360,7 @@ export default class AddConcert extends React.Component {
 
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Duration in minutes *"
+                placeholder="Czas trwania w minutach *"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -347,23 +378,23 @@ export default class AddConcert extends React.Component {
           <Block row middle style={styles.rows}>
             <FlatList
                 keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithDatePickerSample}
+                ListHeaderComponent={InputWithDatePickerRehearsal}
                 horizontal={true}
             />
             <FlatList
                 keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithTimePickerSample}
+                ListHeaderComponent={InputWithTimePickerRehearsal}
                 horizontal={true}
             />
           </Block>
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-                Additional information
+                Dodatkowe informacje
             </Text>
           </Block>
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Number of sets"
+                placeholder="Liczba setów"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -383,7 +414,7 @@ export default class AddConcert extends React.Component {
                 <Picker
                     selectedValue={this.state.event_type_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({event_type_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Select event type from list *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj koncertu z listy *' value='0' />
                         { data_events_types.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -392,7 +423,7 @@ export default class AddConcert extends React.Component {
           </Block>
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Event details"
+                placeholder="Szczegóły koncertu"
                 style={styles.inputs_textarea}
                 iconContent={
                     <Icon
@@ -411,7 +442,7 @@ export default class AddConcert extends React.Component {
                 <Picker
                     selectedValue={this.state.tour_manager_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({tour_manager_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Select tour manager from list *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy *' value='0' />
                         { data_teams_managers.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -420,7 +451,7 @@ export default class AddConcert extends React.Component {
           </Block>
           <Block row middle style={styles.rows}>
                                 <Input
-                                    placeholder="Contact phone"
+                                    placeholder="Telefon kontaktowy"
                                     style={styles.inputs_textarea}
                                     iconContent={
                                         <Icon
@@ -441,7 +472,7 @@ export default class AddConcert extends React.Component {
                         style={{ fontFamily: 'montserrat-bold' }}
                         size={14}
                         color={nowTheme.COLORS.WHITE}>
-                            Save concert
+                            Zapisz koncert
                     </Text>
                 </Button>
             </Block>
@@ -479,7 +510,8 @@ const styles = StyleSheet.create({
           borderRadius: 21.5,
           width: (width-50)/2,
           marginLeft: 5,
-          marginRight: 5
+          marginRight: 5,
+          backgroundColor: '#ffffff'
         },
     inputs_textarea: {
           borderWidth: 1,

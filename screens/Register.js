@@ -92,7 +92,7 @@ class Register extends React.Component {
                         color="#333"
                         size={24}
                       >
-                        Log in
+                        Logowanie
                       </Text>
                     </Block>
 
@@ -104,7 +104,7 @@ class Register extends React.Component {
                         <Block>
                           <Block width={width * 0.8}>
                             <Input
-                              placeholder="Email"
+                              placeholder="E-mail"
                               style={styles.inputs}
                               iconContent={
                                 <Icon
@@ -120,7 +120,7 @@ class Register extends React.Component {
                           </Block>
                           <Block width={width * 0.8}>
                                                       <Input
-                                                        placeholder="Password"
+                                                        placeholder="Hasło"
                                                         secureTextEntry={true}
                                                         style={styles.inputs}
                                                         iconContent={
@@ -144,7 +144,7 @@ class Register extends React.Component {
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Log in
+                              Zaloguj się
                             </Text>
                           </Button>
                         </Block>

@@ -45,8 +45,8 @@ export default class Onboarding extends React.Component {
                   size={11}
                   style={{ fontFamily: 'montserrat-regular' }}
                 >
-                  Designed and Coded
-                  by j7technologies
+                  Zaprojektowane i wykonane
+                  przez j7technologies
                 </Text>
               </Block>
 
@@ -67,7 +67,7 @@ export default class Onboarding extends React.Component {
                     style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
                     color={theme.COLORS.WHITE}
                   >
-                    GET STARTED
+                    ROZPOCZNIJ
                   </Text>
                 </Button>
               </Block>

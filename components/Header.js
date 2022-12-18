@@ -1,12 +1,14 @@
 import React from 'react';
 import { withNavigation } from '@react-navigation/compat';
-import { TouchableOpacity, StyleSheet, Platform, Dimensions, Keyboard } from 'react-native';
+import { TouchableOpacity, StyleSheet, Platform, Dimensions, Keyboard, View, ActivityIndicator } from 'react-native';
 import { Button, Block, NavBar, Text, theme, Button as GaButton } from 'galio-framework';
 
 import Icon from './Icon';
 import Input from './Input';
 import Tabs from './Tabs';
 import nowTheme from '../constants/Theme';
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { height, width } = Dimensions.get('window');
 const iPhoneX = () =>
@@ -38,9 +40,24 @@ const BasketButton = ({ isWhite, style, navigation }) => (
   </TouchableOpacity>
 );
 
-
+let userType;
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoading: true
+    };
+
+      AsyncStorage.getItem('logged_user_rights')
+                 .then((value) => {
+                   userType = value;
+                   this.setState({ isLoading: false });
+                 });
+  }
+
+
   handleLeftPress = () => {
     const { back, navigation } = this.props;
     return back ? navigation.goBack() : navigation.openDrawer();
@@ -123,41 +140,52 @@ class Header extends React.Component {
   };
   renderOptions = () => {
     const { navigation, optionLeft, optionRight } = this.props;
+    const { isLoading } = this.state;
+
+    let concerts = (userType == 'admin' || userType == 'tour_manager' || userType == 'team_member') ?
+    <Button
+              shadowless
+              style={[styles.tab]}
+              onPress={() => console.log(navigation.navigate('Concerts'))}
+            >
+              <Block row middle>
+                <Icon
+                  name="pin-32x"
+                  family="NowExtra"
+                  size={18}
+                  style={{ paddingRight: 8 }}
+                  color='red'
+                />
+                <Text style={{ fontFamily: 'montserrat-regular' }} size={15} style={styles.tabTitleLeft}>
+                  {optionLeft || 'Koncerty'}
+                </Text>
+              </Block>
+            </Button>
+    : null;
+
+    let audio_visual = (userType == 'admin' || userType == 'tour_manager' || userType == 'audio_visual') ?
+    <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Audio Visual Support')}>
+                      <Block row middle>
+                        <Icon
+                          size={18}
+                          name="bag-162x"
+                          family="NowExtra"
+                          style={{ paddingRight: 8 }}
+                          color={nowTheme.COLORS.HEADER}
+                        />
+                        <Text style={{ fontFamily: 'montserrat-regular' }} size={15} style={styles.tabTitle}>
+                          {optionRight || 'Montaż'}
+                        </Text>
+                      </Block>
+                    </Button> : null;
 
     return (
+    isLoading ? <View style={{flex: 1, justifyContent: 'center'}}>
+                             <ActivityIndicator size="large" />
+                           </View> :
       <Block row style={styles.options}>
-        <Button
-          shadowless
-          style={[styles.tab]}
-          onPress={() => console.log(navigation.navigate('Concerts'))}
-        >
-          <Block row middle>
-            <Icon
-              name="pin-32x"
-              family="NowExtra"
-              size={18}
-              style={{ paddingRight: 8 }}
-              color='red'
-            />
-            <Text style={{ fontFamily: 'montserrat-regular' }} size={16} style={styles.tabTitleLeft}>
-              {optionLeft || 'Concerts'}
-            </Text>
-          </Block>
-        </Button>
-         <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Technical Support')}>
-                  <Block row middle>
-                    <Icon
-                      size={18}
-                      name="bag-162x"
-                      family="NowExtra"
-                      style={{ paddingRight: 8 }}
-                      color={nowTheme.COLORS.HEADER}
-                    />
-                    <Text style={{ fontFamily: 'montserrat-regular' }} size={16} style={styles.tabTitle}>
-                      {optionRight || 'Technical support'}
-                    </Text>
-                  </Block>
-                </Button>
+        {concerts}
+         {audio_visual}
       </Block>
     );
   };

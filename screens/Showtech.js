@@ -51,10 +51,10 @@ class Showtech extends React.Component {
           userType = value;
         });
 
-    let contact_phone = (userType == 'admin' || userType == 'tour_manager' ?
+    let contact_phone = (userType == 'admin' || userType == 'tour_manager' || userType == 'audio_visual' ?
           <Block flex style={{ marginTop: 5 }}>
              <Block row left>
-                 <Text style={[styles.label]}>Contact phone:</Text>
+                 <Text style={[styles.label]}>Telefon kontaktowy:</Text>
                  <Text size={14} muted style={[styles.value, styles.inline]}>{data.contact_phone}</Text>
              </Block>
           </Block> : null);
@@ -86,14 +86,14 @@ class Showtech extends React.Component {
                     }}
                     color='#000000'
                     >
-                    {data.event_name}
+                    {data.support_name}
                   </Text>
                    <Block row>
-                        <Text size={15} color="grey" style={[styles.top_text]}>Place:</Text>
+                        <Text size={15} color="grey" style={[styles.top_text]}>Miejsce:</Text>
                         <Text size={15} color="black" style={[styles.top_text]}>{data.place}</Text>
                   </Block>
-                  <Text size={15} color="grey" style={[styles.top_text]}>Event date and time:</Text>
-                  <Text size={15} color="black" style={[styles.top_text]}>{data.event_date}</Text>
+                  <Text size={15} color="grey" style={[styles.top_text]}>Data i godzina montażu:</Text>
+                  <Text size={15} color="black" style={[styles.top_text]}>{data.assembly_date}</Text>
                 </Block>
               </Block>
 
@@ -104,16 +104,40 @@ class Showtech extends React.Component {
       <Block />
       <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: 200}}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Block flex style={{ marginTop: 5 }}>
+            <Block flex style={{ marginTop: 5 }}>
+                        <Block left>
+                            <Text style={[styles.label]}>Nazwa i data wydarzenia</Text>
+                            <Text size={14} muted style={[styles.value]}>{data.event_name}</Text>
+                        </Block>
+            </Block>
+            <Block flex style={{ marginTop: 5 }}>
+                                    <Block left>
+                                        <Text style={[styles.label]}>Rodzaj montażu</Text>
+                                        <Text size={14} muted style={[styles.value]}>{data.support_type}</Text>
+                                    </Block>
+                        </Block>
+            <Block flex style={{ marginTop: 5 }}>
             <Block left>
-                <Text style={[styles.label]}>Event details</Text>
+                <Text style={[styles.label]}>Opis</Text>
                 <Text size={14} muted style={[styles.value]}>{data.event_details} </Text>
             </Block>
           </Block>
           <Block flex style={{ marginTop: 5 }}>
+                                          <Block left>
+                                              <Text style={[styles.label]}>Zamówiony support</Text>
+                                              <Text size={14} muted style={[styles.value]}>{data.assembly_type} </Text>
+                                          </Block>
+                                        </Block>
+          <Block flex style={{ marginTop: 5 }}>
+                                <Block left>
+                                    <Text style={[styles.label]}>Rodzaj wydarzenia</Text>
+                                    <Text size={14} muted style={[styles.value]}>{data.event_type} </Text>
+                                </Block>
+                              </Block>
+          <Block flex style={{ marginTop: 5 }}>
                       <Block left>
-                          <Text style={[styles.label]}>Responsible person</Text>
-                          <Text size={14} muted style={[styles.value]}>{data.user_name} </Text>
+                          <Text style={[styles.label]}>Tour manager</Text>
+                          <Text size={14} muted style={[styles.value]}>{data.tour_manager} </Text>
                       </Block>
                     </Block>
 

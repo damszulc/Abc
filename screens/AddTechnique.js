@@ -9,7 +9,7 @@ import {
   ActivityIndicator
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Block, Text, theme } from "galio-framework";
+import { Block, Text, theme, Checkbox } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -23,21 +23,23 @@ export default class AddTechnique extends React.Component {
  constructor(props) {
     super(props);
     this.state = {
-        data_teams: [],
+        data_events: [],
+        data_supports_types: [],
+        data_assembly_types: [],
         data_events_types: [],
         data_teams_managers: [],
         isLoading: true,
-        team_id: 0,
-        place: '',
-        concert_date: '',
-        concert_time: '',
+        event_id: 0,
+        support_name: '',
+        support_type_id: 0,
+        assembly_type_list: [],
+        assembly_date: '',
+        assembly_time: '',
         duration: 0,
-        sample_date: '',
-        sample_time: '',
-        sets_number: 0,
+        place: '',
         event_details: '',
-        event_type_id: 0,
         tour_manager_id: 0,
+        event_type_id: 0,
         contact_phone: '',
         user_id: 0
     };
@@ -48,24 +50,25 @@ export default class AddTechnique extends React.Component {
     });
   }
   InsertRecord=()=>{
-    var TeamId = this.state.team_id;
-    var Place = this.state.place;
-    var TechniqueDate = this.state.concert_date;
-    var TechniqueTime = this.state.concert_time;
+    var EventId = this.state.event_id;
+    var SupportName = this.state.support_name;
+    var SupportTypeId = this.state.support_type_id;
+    var AssemblyTypeList = this.state.assembly_type_list;
+    var AssemblyDate = this.state.assembly_date;
+    var AssemblyTime = this.state.assembly_time;
     var Duration = this.state.duration;
-    var SampleDate = this.state.sample_date;
-    var SampleTime = this.state.sample_time;
-    var SetsNumber = this.state.sets_number;
+    var Place = this.state.place;
     var EventDetails = this.state.event_details;
-    var EventTypeId = this.state.event_type_id;
     var TourManagerId = this.state.tour_manager_id;
+    var EventTypeId = this.state.event_type_id;
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-    if (TeamId.value==0 || Place.length==0 || TechniqueDate.length==0 || TechniqueTime.length==0 || EventTypeId.value==0) {
-      alert("Required field is missing !!!");
-    }else{
-      var APIURL = "http://srv36013.seohost.com.pl/anseba/save_concert.php";
+   // if (EventId.value==0 || Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || EventTypeId.value==0) {
+   //   alert("Required field is missing !!!");
+   // }else
+    {
+      var APIURL = "http://srv36013.seohost.com.pl/anseba/save_technique.php";
 
       var headers = {
         'Accept' : 'application/json',
@@ -73,17 +76,17 @@ export default class AddTechnique extends React.Component {
       };
 
       var Data ={
-        TeamId: TeamId,
-        Place: Place,
-        TechniqueDate: TechniqueDate,
-        TechniqueTime: TechniqueTime,
+        EventId: EventId,
+        SupportName: SupportName,
+        SupportTypeId: SupportTypeId,
+        AssemblyTypeList: AssemblyTypeList.toString(),
+        AssemblyDate: AssemblyDate,
+        AssemblyTime: AssemblyTime,
         Duration: Duration,
-        SampleDate: SampleDate,
-        SampleTime: SampleTime,
-        SetsNumber: SetsNumber,
+        Place: Place,
         EventDetails: EventDetails,
-        EventTypeId: EventTypeId,
         TourManagerId: TourManagerId,
+        EventTypeId: EventTypeId,
         ContactPhone: ContactPhone,
         UserId: UserId
       };
@@ -95,6 +98,7 @@ export default class AddTechnique extends React.Component {
       })
       .then((Response)=>Response.json())
       .then((Response)=>{
+      console.log(Response);
         if (Response[0].Message == "Success") {
           console.log("true")
           this.props.navigation.navigate("Techniques");
@@ -110,7 +114,7 @@ export default class AddTechnique extends React.Component {
     try {
       const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_dictionaries.php');
       const json = await response.json();
-      this.setState({ data_teams: json.teams, data_events_types: json.events_types, data_teams_managers: json.teams_managers });
+      this.setState({ data_events: json.events, data_teams_managers: json.teams_managers, data_supports_types: json.supports_types, data_assembly_types: json.assembly_types, data_events_types: json.technique_types});
     } catch (error) {
       console.log(error);
     } finally {
@@ -128,7 +132,7 @@ export default class AddTechnique extends React.Component {
     this.setState({ [switchNumber]: !this.state[switchNumber] });
 
   render() {
-    const { data_teams, data_events_types, data_teams_managers, isLoading } = this.state;
+    const { data_events, data_supports_types, data_assembly_types, data_events_types, data_teams_managers, isLoading } = this.state;
 
     const InputWithDatePickerTechnique = (props) => {
         const [date, setDate] = React.useState(new Date());
@@ -136,30 +140,32 @@ export default class AddTechnique extends React.Component {
 
         return (
             <>
-                <Input
-                    placeholder="Technique date *"
-                    style={styles.inputs_half}
-                    iconContent={
-                        <Icon
-                            size={16}
-                            color="#ADB5BD"
-                            name="calendar-602x"
-                            family="NowExtra"
-                            style={styles.inputIcons}
-                            onPress={() => setShowPicker(true)}
-
+                <Button
+                    style={styles.inputs_half} color='#ADB5BD'
+                    onPress={() => setShowPicker(true)}>
+                    <Block row>
+                        <Icon size={16}
+                          color="#ADB5BD"
+                          name="calendar-602x"
+                          family="NowExtra"
+                          style={styles.inputIcons}
+                          onPress={() => setShowPicker(true)}
                         />
-                    }
-                    value={this.state.concert_date}
-                    onClick={() => setShowPicker(true) || console.log(showPicker)}
-                />
+                        <Text
+                            style={{ fontFamily: 'montserrat-regular', color: '#ADB5BD' }}
+                            size={14}
+                            color={nowTheme.COLORS.WHITE}>
+                            {this.state.assembly_date != '' ? this.state.assembly_date : 'Data montażu *'}
+                        </Text>
+                    </Block>
+                </Button>
                 { showPicker ? (
                      <DateTimePicker
                         testID="date-picker"
                         value={new Date(date)}
                         mode="date"
                         is24Hour={true}
-                        onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
+                        onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
                         minimumDate={new Date()}
                       />
                 ) : null }
@@ -173,107 +179,38 @@ export default class AddTechnique extends React.Component {
 
                 return (
                     <>
-                        <Input
-                             placeholder="Technique time *"
-                             style={styles.inputs_half}
-                             iconContent={
-                                 <Icon
-                                    size={16}
-                                    color="#ADB5BD"
-                                    name="time-alarm2x"
-                                    family="NowExtra"
-                                    style={styles.inputIcons}
-                                    onPress={() => setShowPicker(true)}
-                                 />
-                             }
-                            value={this.state.concert_time}
-                             onClick={() => setShowPicker(true) || console.log(showPicker)}
-                        />
+                        <Button
+                            style={styles.inputs_half} color='#ADB5BD'
+                            onPress={() => setShowPicker(true)}>
+                            <Block row>
+                                <Icon size={16}
+                                  color="#ADB5BD"
+                                  name="time-alarm2x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                  onPress={() => setShowPicker(true)}
+                                />
+                                <Text
+                                    style={{ fontFamily: 'montserrat-regular', color: '#ADB5BD' }}
+                                    size={14}
+                                    color={nowTheme.COLORS.WHITE}>
+                                    {this.state.assembly_time != '' ? this.state.assembly_time : 'Godzina montażu *'}
+                                </Text>
+                            </Block>
+                        </Button>
                         { showPicker ? (
                              <DateTimePicker
                                 testID="time-picker"
                                 value={new Date(time)}
                                 mode="time"
                                 is24Hour={true}
-                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({concert_time: Moment(time).format('HH:mm')})}
+                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
                                 timeZoneOffsetInSeconds={3600}
                               />
                         ) : null }
                     </>
                 );
             };
-
-   const InputWithDatePickerSample = (props) => {
-           const [date, setDate] = React.useState(new Date());
-           const [showPicker, setShowPicker] = React.useState(false);
-
-           return (
-               <>
-                   <Input
-                       placeholder="Sample date"
-                       style={styles.inputs_half}
-                       iconContent={
-                           <Icon
-                               size={16}
-                               color="#ADB5BD"
-                               name="calendar-602x"
-                               family="NowExtra"
-                               style={styles.inputIcons}
-                               onPress={() => setShowPicker(true)}
-                           />
-                       }
-                        value={this.state.sample_date}
-                       onClick={() => setShowPicker(true) || console.log(showPicker)}
-                   />
-                   { showPicker ? (
-                        <DateTimePicker
-                           testID="date-picker"
-                           value={new Date(date)}
-                           mode="date"
-                           is24Hour={true}
-                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({sample_date: Moment(date).format('DD/MM/YYYY')})}
-                           maximumDate={new Date()}
-                         />
-                   ) : null }
-               </>
-           );
-       };
-
-       const InputWithTimePickerSample = () => {
-                   const [time, setTime] = React.useState(new Date());
-                   const [showPicker, setShowPicker] = React.useState(false);
-
-                   return (
-                       <>
-                           <Input
-                                placeholder="Sample time"
-                                style={styles.inputs_half}
-                                iconContent={
-                                    <Icon
-                                       size={16}
-                                       color="#ADB5BD"
-                                       name="time-alarm2x"
-                                       family="NowExtra"
-                                       style={styles.inputIcons}
-                                       onPress={() => setShowPicker(true)}
-                                    />
-                                }
-                                value={this.state.sample_time}
-                                onClick={() => setShowPicker(true) || console.log(showPicker)}
-                           />
-                           { showPicker ? (
-                                <DateTimePicker
-                                   testID="time-picker"
-                                   value={new Date(time)}
-                                   mode="time"
-                                   is24Hour={true}
-                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({sample_time: Moment(time).format('HH:mm')})}
-                                   timeZoneOffsetInSeconds={3600}
-                                 />
-                           ) : null }
-                       </>
-                   );
-               };
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
@@ -282,12 +219,12 @@ export default class AddTechnique extends React.Component {
       >
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-                Basic information
+                Dane podstawowe
             </Text>
           </Block>
           <Block row middle style={styles.rows}>
                       <Input
-                          placeholder="Event name *"
+                          placeholder="Nazwa zlecenia *"
                           style={styles.inputs}
                           iconContent={
                               <Icon
@@ -301,22 +238,58 @@ export default class AddTechnique extends React.Component {
                           value={this.state.event_name}
                           onChangeText={event_name=>this.setState({event_name})}
                       />
-                    </Block>
+          </Block>
           <Block middle>
+                      <Block style={styles.rows, styles.inputs_select}>
+                          <Picker
+                              selectedValue={this.state.support_type_id}
+                              onValueChange={(itemValue, itemIndex) => this.setState({support_type_id: itemValue})}>
+                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj supportu z listy *' value='0' />
+                                  { data_supports_types.map((item, key)=>
+                                      <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                                  )}
+                          </Picker>
+                      </Block>
+                    </Block>
+          <Block middle style={{paddingTop: 10}}>
             <Block style={styles.rows, styles.inputs_select}>
                 <Picker
-                    selectedValue={this.state.team_id}
-                    onValueChange={(itemValue, itemIndex) => this.setState({team_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Select user from list *' value='0' />
-                        { data_teams.map((item, key)=>
+                    selectedValue={this.state.event_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({event_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Wybierz wydarzenie z listy *' value='0' />
+                        { data_events.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
-               </Picker>
+                </Picker>
             </Block>
+          </Block>
+          <Block middle style={{paddingTop: 20}}>
+            <Text>Zamówiony support</Text>
+                {data_assembly_types.map((item, key)=>
+                <Block style={{ marginVertical: theme.SIZES.BASE/2, marginLeft: 15}} row width={width*0.9} key={key}>
+                    <Checkbox
+                        checkboxStyle={{
+                            borderWidth: 1,
+                            borderRadius: 2,
+                            borderColor: '#E3E3E3'
+                        }}
+                        color={nowTheme.COLORS.PRIMARY}
+                        labelStyle={{
+                            color: nowTheme.COLORS.HEADER,
+                            fontFamily: 'montserrat-regular'
+                        }}
+                        key={item.value}
+                        label={item.label}
+                        onChange={(checked) => (checked) ?
+                        this.state.assembly_type_list.push(item.value) :
+                        this.state.assembly_type_list.splice(this.state.assembly_type_list.indexOf(item.value), 1)}
+                    />
+                  </Block>
+                )}
           </Block>
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Place *"
+                placeholder="Miejsce montażu *"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -346,7 +319,7 @@ export default class AddTechnique extends React.Component {
 
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Duration in minutes *"
+                placeholder="Czas trwania w minutach *"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -363,12 +336,12 @@ export default class AddTechnique extends React.Component {
           </Block>
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
-                Additional information
+                Dodatkowe informacje
             </Text>
           </Block>
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Event details"
+                placeholder="Szczegóły"
                 style={styles.inputs_textarea}
                 iconContent={
                     <Icon
@@ -382,9 +355,33 @@ export default class AddTechnique extends React.Component {
                 value={this.state.event_details}
                 onChangeText={event_details=>this.setState({event_details})}/>
           </Block>
+          <Block middle>
+            <Block style={styles.rows, styles.inputs_select}>
+                <Picker
+                    selectedValue={this.state.tour_manager_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({tour_manager_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy *' value='0' />
+                        { data_teams_managers.map((item, key)=>
+                            <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                        )}
+                </Picker>
+            </Block>
+          </Block>
+          <Block middle style={{paddingTop: 10}}>
+                      <Block style={styles.rows, styles.inputs_select}>
+                          <Picker
+                              selectedValue={this.state.event_type_id}
+                              onValueChange={(itemValue, itemIndex) => this.setState({event_type_id: itemValue})}>
+                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj montażu *' value='0' />
+                                  { data_events_types.map((item, key)=>
+                                      <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
+                                  )}
+                          </Picker>
+                      </Block>
+                    </Block>
           <Block row middle style={styles.rows}>
                       <Input
-                          placeholder="Contact phone"
+                          placeholder="Telefon kontaktowy"
                           style={styles.inputs_textarea}
                           iconContent={
                               <Icon
@@ -405,7 +402,7 @@ export default class AddTechnique extends React.Component {
                         style={{ fontFamily: 'montserrat-bold' }}
                         size={14}
                         color={nowTheme.COLORS.WHITE}>
-                            Save technical support
+                            Zapisz montaż
                     </Text>
                 </Button>
             </Block>
@@ -443,7 +440,8 @@ const styles = StyleSheet.create({
           borderRadius: 21.5,
           width: (width-50)/2,
           marginLeft: 5,
-          marginRight: 5
+          marginRight: 5,
+          backgroundColor: '#ffffff'
         },
     inputs_textarea: {
           borderWidth: 1,
