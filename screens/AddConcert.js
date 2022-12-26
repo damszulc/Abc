@@ -166,6 +166,7 @@ export default class AddConcert extends React.Component {
                         is24Hour={true}
                         onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
                         minimumDate={new Date()}
+                        style={{width: 320, backgroundColor: "white"}}
                       />
                 ) : null }
             </>
@@ -205,6 +206,7 @@ export default class AddConcert extends React.Component {
                                 is24Hour={true}
                                 onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({concert_time: Moment(time).format('HH:mm')})}
                                 timeZoneOffsetInSeconds={3600}
+                                style={{width: 320, backgroundColor: "white"}}
                               />
                         ) : null }
                     </>
@@ -244,6 +246,7 @@ export default class AddConcert extends React.Component {
                            is24Hour={true}
                            onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
                            maximumDate={new Date()}
+                           style={{width: 320, backgroundColor: "white"}}
                          />
                    ) : null }
                </>
@@ -283,6 +286,7 @@ export default class AddConcert extends React.Component {
                                    is24Hour={true}
                                    onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
                                    timeZoneOffsetInSeconds={3600}
+                                   style={{width: 320, backgroundColor: "white"}}
                                  />
                            ) : null }
                        </>

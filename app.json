@@ -22,13 +22,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.marmozeta.ansebaapp",
       "icon": "./assets/icon.png",
       "infoPlist": {
         "NSCalendarsUsageDescription": "Zezwolenie na użycie kalendarza umożliwia dodawanie wydarzeń do swojego kalendarza"
       },
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "description": "Anseba App. Created by j7technologies",
     "android": {
