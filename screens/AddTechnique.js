@@ -167,6 +167,7 @@ export default class AddTechnique extends React.Component {
                         is24Hour={true}
                         onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
                         minimumDate={new Date()}
+                        style={{width: '100%', backgroundColor: "white"}}
                       />
                 ) : null }
             </>
@@ -206,6 +207,7 @@ export default class AddTechnique extends React.Component {
                                 is24Hour={true}
                                 onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
                                 timeZoneOffsetInSeconds={3600}
+                                style={{width: '100%', backgroundColor: "white"}}
                               />
                         ) : null }
                     </>
