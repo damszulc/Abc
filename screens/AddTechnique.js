@@ -41,7 +41,9 @@ export default class AddTechnique extends React.Component {
         tour_manager_id: 0,
         event_type_id: 0,
         contact_phone: '',
-        user_id: 0
+        user_id: 0,
+        showPickerTime: false,
+        showPickerDate: false
     };
 
     AsyncStorage.getItem('logged_user_id')
@@ -142,34 +144,23 @@ export default class AddTechnique extends React.Component {
             <>
                 <Button
                     style={styles.inputs_half} color='#ADB5BD'
-                    onPress={() => setShowPicker(true)}>
+                    onPress={() => this.setState({showPickerDate: true})}>
                     <Block row>
                         <Icon size={16}
                           color="#ADB5BD"
                           name="calendar-602x"
                           family="NowExtra"
                           style={styles.inputIcons}
-                          onPress={() => setShowPicker(true)}
+                          onPress={() => this.setState({showPickerDate: true})}
                         />
                         <Text
-                            style={{ fontFamily: 'montserrat-regular', color: '#ADB5BD' }}
+                            style={{ color: '#ADB5BD' }}
                             size={14}
                             color={nowTheme.COLORS.WHITE}>
                             {this.state.assembly_date != '' ? this.state.assembly_date : 'Data montażu *'}
                         </Text>
                     </Block>
                 </Button>
-                { showPicker ? (
-                     <DateTimePicker
-                        testID="date-picker"
-                        value={new Date(date)}
-                        mode="date"
-                        is24Hour={true}
-                        onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
-                        minimumDate={new Date()}
-                        style={{width: '100%', backgroundColor: "white"}}
-                      />
-                ) : null }
             </>
         );
     };
@@ -182,34 +173,23 @@ export default class AddTechnique extends React.Component {
                     <>
                         <Button
                             style={styles.inputs_half} color='#ADB5BD'
-                            onPress={() => setShowPicker(true)}>
+                            onPress={() => this.setState({showPickerTime: true})}>
                             <Block row>
                                 <Icon size={16}
                                   color="#ADB5BD"
                                   name="time-alarm2x"
                                   family="NowExtra"
                                   style={styles.inputIcons}
-                                  onPress={() => setShowPicker(true)}
+                                  onPress={() => this.setState({showPickerTime: true})}
                                 />
                                 <Text
-                                    style={{ fontFamily: 'montserrat-regular', color: '#ADB5BD' }}
+                                    style={{ color: '#ADB5BD' }}
                                     size={14}
                                     color={nowTheme.COLORS.WHITE}>
                                     {this.state.assembly_time != '' ? this.state.assembly_time : 'Godzina montażu *'}
                                 </Text>
                             </Block>
                         </Button>
-                        { showPicker ? (
-                             <DateTimePicker
-                                testID="time-picker"
-                                value={new Date(time)}
-                                mode="time"
-                                is24Hour={true}
-                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
-                                timeZoneOffsetInSeconds={3600}
-                                style={{width: '100%', backgroundColor: "white"}}
-                              />
-                        ) : null }
                     </>
                 );
             };
@@ -219,6 +199,28 @@ export default class AddTechnique extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
       >
+        { this.state.showPickerDate ? (
+            <DateTimePicker
+                testID="date-picker"
+                value={new Date()}
+                mode="date"
+                is24Hour={true}
+                onChange={(_: any, date?: Date) => this.setState({showPickerDate: false}) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
+                minimumDate={new Date()}
+                style={{width: '100%', backgroundColor: "white"}}
+            />
+            ) : null }
+        { this.state.showPickerTime ? (
+            <DateTimePicker
+                testID="time-picker"
+                value={new Date()}
+                mode="time"
+                is24Hour={true}
+                onChange={(_: any, time?: Date) => this.setState({showPickerTime: false}) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
+                timeZoneOffsetInSeconds={3600}
+                style={{width: '100%', backgroundColor: "white"}}
+            />
+            ) : null }
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe

@@ -40,7 +40,11 @@ export default class AddConcert extends React.Component {
         event_type_id: 0,
         tour_manager_id: 0,
         contact_phone: '',
-        user_id: 0
+        user_id: 0,
+        showPickerTimeConcert: false,
+        showPickerDateConcert: false,
+        showPickerTimeRehearsal: false,
+        showPickerDateRehearsal: false
     };
 
     AsyncStorage.getItem('logged_user_id')
@@ -141,14 +145,14 @@ export default class AddConcert extends React.Component {
             <>
                 <Button
                     style={styles.inputs_half} color='#ADB5BD'
-                    onPress={() => setShowPicker(true)}>
+                    onPress={() => this.setState({showPickerDateConcert: true})}>
                     <Block row>
                         <Icon size={16}
                             color="#ADB5BD"
                             name="calendar-602x"
                             family="NowExtra"
                             style={styles.inputIcons}
-                            onPress={() => setShowPicker(true)}
+                            onPress={() => this.setState({showPickerDateConcert: true})}
                         />
                         <Text
                             style={{ color: '#ADB5BD' }}
@@ -158,17 +162,6 @@ export default class AddConcert extends React.Component {
                         </Text>
                     </Block>
                 </Button>
-                { showPicker ? (
-                     <DateTimePicker
-                        testID="date-picker"
-                        value={new Date(date)}
-                        mode="date"
-                        is24Hour={true}
-                        onChange={(_: any, date?: Date) => setShowPicker(false) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
-                        minimumDate={new Date()}
-                        style={{width: '100%', backgroundColor: "white"}}
-                      />
-                ) : null }
             </>
         );
     };
@@ -181,14 +174,14 @@ export default class AddConcert extends React.Component {
                     <>
                         <Button
                             style={styles.inputs_half} color='#ADB5BD'
-                            onPress={() => setShowPicker(true)}>
+                            onPress={() => this.setState({showPickerTimeConcert: true})}>
                             <Block row>
                                 <Icon size={16}
                                     color="#ADB5BD"
                                     name="time-alarm2x"
                                     family="NowExtra"
                                     style={styles.inputIcons}
-                                    onPress={() => setShowPicker(true)}
+                                    onPress={() => this.setState({showPickerTimeConcert: true})}
                                 />
                                 <Text
                                     style={{ color: '#ADB5BD' }}
@@ -198,17 +191,6 @@ export default class AddConcert extends React.Component {
                                 </Text>
                             </Block>
                         </Button>
-                        { showPicker ? (
-                             <DateTimePicker
-                                testID="time-picker"
-                                value={new Date(time)}
-                                mode="time"
-                                is24Hour={true}
-                                onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({concert_time: Moment(time).format('HH:mm')})}
-                                timeZoneOffsetInSeconds={3600}
-                                style={{width: '100%', backgroundColor: "white"}}
-                              />
-                        ) : null }
                     </>
                 );
             };
@@ -221,14 +203,14 @@ export default class AddConcert extends React.Component {
                <>
                     <Button
                         style={styles.inputs_half} color='#ADB5BD'
-                        onPress={() => setShowPicker(true)}>
+                        onPress={() => this.setState({showPickerDateRehearsal: true})}>
                         <Block row>
                             <Icon size={16}
                                 color="#ADB5BD"
                                 name="calendar-602x"
                                 family="NowExtra"
                                 style={styles.inputIcons}
-                                onPress={() => setShowPicker(true)}
+                                onPress={() => this.setState({showPickerDateRehearsal: true})}
                             />
                             <Text
                                 style={{ color: '#ADB5BD' }}
@@ -238,17 +220,6 @@ export default class AddConcert extends React.Component {
                             </Text>
                         </Block>
                     </Button>
-                   { showPicker ? (
-                        <DateTimePicker
-                           testID="date-picker"
-                           value={new Date(date)}
-                           mode="date"
-                           is24Hour={true}
-                           onChange={(_: any, date?: Date) => setDate(date) || setShowPicker(false) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
-                           maximumDate={new Date()}
-                           style={{width: '100%', backgroundColor: "white"}}
-                         />
-                   ) : null }
                </>
            );
        };
@@ -261,14 +232,14 @@ export default class AddConcert extends React.Component {
                        <>
                             <Button
                                 style={styles.inputs_half} color='#ADB5BD'
-                                onPress={() => setShowPicker(true)}>
+                                onPress={() => this.setState({showPickerTimeRehearsal: true})}>
                                 <Block row>
                                     <Icon size={16}
                                         color="#ADB5BD"
                                         name="time-alarm2x"
                                         family="NowExtra"
                                         style={styles.inputIcons}
-                                        onPress={() => setShowPicker(true)}
+                                        onPress={() => this.setState({showPickerTimeRehearsal: true})}
                                     />
                                     <Text
                                         style={{ color: '#ADB5BD' }}
@@ -278,17 +249,6 @@ export default class AddConcert extends React.Component {
                                     </Text>
                                 </Block>
                             </Button>
-                           { showPicker ? (
-                                <DateTimePicker
-                                   testID="time-picker"
-                                   value={new Date(time)}
-                                   mode="time"
-                                   is24Hour={true}
-                                   onChange={(_: any, time?: Date) => setTime(time) || setShowPicker(false) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
-                                   timeZoneOffsetInSeconds={3600}
-                                   style={{width: '100%', backgroundColor: "white"}}
-                                 />
-                           ) : null }
                        </>
                    );
                };
@@ -298,6 +258,52 @@ export default class AddConcert extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
       >
+             { this.state.showPickerDateConcert ? (
+                <DateTimePicker
+                    testID="date-concert-picker"
+                    value={new Date()}
+                    mode="date"
+                    is24Hour={true}
+                    onChange={(_: any, date?: Date) => this.setState({showPickerDateConcert: false}) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
+                    minimumDate={new Date()}
+                    style={{width: '100%', backgroundColor: "white"}} />
+                 ) : null }
+
+             { this.state.showPickerTimeConcert ? (
+                <DateTimePicker
+                    testID="time-concert-picker"
+                    value={new Date()}
+                    mode="time"
+                    is24Hour={true}
+                    onChange={(_: any, time?: Date) => this.setState({showPickerTimeConcert: false}) || this.setState({concert_time: Moment(time).format('HH:mm')})}
+                    timeZoneOffsetInSeconds={3600}
+                    style={{width: '100%', backgroundColor: "white"}}
+                />
+                ) : null }
+
+             { this.state.showPickerDateRehearsal ? (
+                <DateTimePicker
+                    testID="date-rehearsal-picker"
+                    value={new Date()}
+                    mode="date"
+                    is24Hour={true}
+                    onChange={(_: any, date?: Date) => this.setState({showPickerDateRehearsal: false}) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
+                    minimumDate={new Date()}
+                    style={{width: '100%', backgroundColor: "white"}} />
+                ) : null }
+
+             { this.state.showPickerTimeRehearsal ? (
+                <DateTimePicker
+                    testID="time-rehearsal-picker"
+                    value={new Date()}
+                    mode="time"
+                    is24Hour={true}
+                    onChange={(_: any, time?: Date) => this.setState({showPickerTimeRehearsal: false}) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
+                    timeZoneOffsetInSeconds={3600}
+                    style={{width: '100%', backgroundColor: "white"}}
+                />
+                ) : null }
+
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
