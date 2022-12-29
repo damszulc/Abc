@@ -199,28 +199,6 @@ export default class AddTechnique extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
       >
-        { this.state.showPickerDate ? (
-            <DateTimePicker
-                testID="date-picker"
-                value={new Date()}
-                mode="date"
-                is24Hour={true}
-                onChange={(_: any, date?: Date) => this.setState({showPickerDate: false}) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
-                minimumDate={new Date()}
-                style={{width: '100%', backgroundColor: "white"}}
-            />
-            ) : null }
-        { this.state.showPickerTime ? (
-            <DateTimePicker
-                testID="time-picker"
-                value={new Date()}
-                mode="time"
-                is24Hour={true}
-                onChange={(_: any, time?: Date) => this.setState({showPickerTime: false}) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
-                timeZoneOffsetInSeconds={3600}
-                style={{width: '100%', backgroundColor: "white"}}
-            />
-            ) : null }
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
@@ -320,6 +298,28 @@ export default class AddTechnique extends React.Component {
                 horizontal={true}
             />
           </Block>
+            { this.state.showPickerDate ? (
+                      <DateTimePicker
+                          testID="date-picker"
+                          value={new Date()}
+                          mode="date"
+                          is24Hour={true}
+                          onChange={(_: any, date?: Date) => this.setState({showPickerDate: false}) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
+                          minimumDate={new Date()}
+                          style={{width: '100%', backgroundColor: "white"}}
+                      />
+                      ) : null }
+                  { this.state.showPickerTime ? (
+                      <DateTimePicker
+                          testID="time-picker"
+                          value={new Date()}
+                          mode="time"
+                          is24Hour={true}
+                          onChange={(_: any, time?: Date) => this.setState({showPickerTime: false}) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
+                          timeZoneOffsetInSeconds={3600}
+                          style={{width: '100%', backgroundColor: "white"}}
+                      />
+                      ) : null }
 
           <Block row middle style={styles.rows}>
             <Input

@@ -258,52 +258,6 @@ export default class AddConcert extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
       >
-             { this.state.showPickerDateConcert ? (
-                <DateTimePicker
-                    testID="date-concert-picker"
-                    value={new Date()}
-                    mode="date"
-                    is24Hour={true}
-                    onChange={(_: any, date?: Date) => this.setState({showPickerDateConcert: false}) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
-                    minimumDate={new Date()}
-                    style={{width: '100%', backgroundColor: "white"}} />
-                 ) : null }
-
-             { this.state.showPickerTimeConcert ? (
-                <DateTimePicker
-                    testID="time-concert-picker"
-                    value={new Date()}
-                    mode="time"
-                    is24Hour={true}
-                    onChange={(_: any, time?: Date) => this.setState({showPickerTimeConcert: false}) || this.setState({concert_time: Moment(time).format('HH:mm')})}
-                    timeZoneOffsetInSeconds={3600}
-                    style={{width: '100%', backgroundColor: "white"}}
-                />
-                ) : null }
-
-             { this.state.showPickerDateRehearsal ? (
-                <DateTimePicker
-                    testID="date-rehearsal-picker"
-                    value={new Date()}
-                    mode="date"
-                    is24Hour={true}
-                    onChange={(_: any, date?: Date) => this.setState({showPickerDateRehearsal: false}) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
-                    minimumDate={new Date()}
-                    style={{width: '100%', backgroundColor: "white"}} />
-                ) : null }
-
-             { this.state.showPickerTimeRehearsal ? (
-                <DateTimePicker
-                    testID="time-rehearsal-picker"
-                    value={new Date()}
-                    mode="time"
-                    is24Hour={true}
-                    onChange={(_: any, time?: Date) => this.setState({showPickerTimeRehearsal: false}) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
-                    timeZoneOffsetInSeconds={3600}
-                    style={{width: '100%', backgroundColor: "white"}}
-                />
-                ) : null }
-
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
@@ -367,7 +321,28 @@ export default class AddConcert extends React.Component {
                 horizontal={true}
             />
           </Block>
+           { this.state.showPickerDateConcert ? (
+                          <DateTimePicker
+                              testID="date-concert-picker"
+                              value={new Date()}
+                              mode="date"
+                              is24Hour={true}
+                              onChange={(_: any, date?: Date) => this.setState({showPickerDateConcert: false}) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
+                              minimumDate={new Date()}
+                              style={{width: '100%', backgroundColor: "white"}} />
+                           ) : null }
 
+                       { this.state.showPickerTimeConcert ? (
+                          <DateTimePicker
+                              testID="time-concert-picker"
+                              value={new Date()}
+                              mode="time"
+                              is24Hour={true}
+                              onChange={(_: any, time?: Date) => this.setState({showPickerTimeConcert: false}) || this.setState({concert_time: Moment(time).format('HH:mm')})}
+                              timeZoneOffsetInSeconds={3600}
+                              style={{width: '100%', backgroundColor: "white"}}
+                          />
+                          ) : null }
           <Block row middle style={styles.rows}>
             <Input
                 placeholder="Czas trwania w minutach *"
@@ -397,6 +372,29 @@ export default class AddConcert extends React.Component {
                 horizontal={true}
             />
           </Block>
+
+                       { this.state.showPickerDateRehearsal ? (
+                          <DateTimePicker
+                              testID="date-rehearsal-picker"
+                              value={new Date()}
+                              mode="date"
+                              is24Hour={true}
+                              onChange={(_: any, date?: Date) => this.setState({showPickerDateRehearsal: false}) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
+                              minimumDate={new Date()}
+                              style={{width: '100%', backgroundColor: "white"}} />
+                          ) : null }
+
+                       { this.state.showPickerTimeRehearsal ? (
+                          <DateTimePicker
+                              testID="time-rehearsal-picker"
+                              value={new Date()}
+                              mode="time"
+                              is24Hour={true}
+                              onChange={(_: any, time?: Date) => this.setState({showPickerTimeRehearsal: false}) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
+                              timeZoneOffsetInSeconds={3600}
+                              style={{width: '100%', backgroundColor: "white"}}
+                          />
+                          ) : null }
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dodatkowe informacje
