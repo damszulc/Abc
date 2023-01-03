@@ -146,7 +146,6 @@ export default class AddConcert extends React.Component {
 
       const changeDate = (ev) => {
             this.state.concert_date = ev;
-            console.log(ev);
             setSelectedDate(this.state.concert_date+' '+this.state.concert_time);
       }
 
@@ -157,7 +156,6 @@ export default class AddConcert extends React.Component {
 
       return (
         <DatePicker
-          selected={getToday()}
           onDateChange={changeDate}
           onTimeChange={changeTime}
           minimumDate={getToday()}
@@ -182,7 +180,6 @@ export default class AddConcert extends React.Component {
 
           return (
             <DatePicker
-              selected={getToday()}
               onDateChange={changeDate}
               onTimeChange={changeTime}
               minimumDate={getToday()}

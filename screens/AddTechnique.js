@@ -152,7 +152,6 @@ export default class AddTechnique extends React.Component {
 
           return (
             <DatePicker
-              selected={getToday()}
               onDateChange={changeDate}
               onTimeChange={changeTime}
               minimumDate={getToday()}
