@@ -46,7 +46,7 @@ export default class Technique extends Component {
                 right
                 color="black"
                 style={styles.search}
-                placeholder="Szukaj w montażu audio-wizualnym..."
+                placeholder="Szukaj w technice..."
                 placeholderTextColor={'#8898AA'}
                 onChangeText={search=>this.setState({search})}
                 iconContent={

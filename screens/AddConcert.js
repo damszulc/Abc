@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   FlatList,
@@ -12,12 +12,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 
 import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
+import DatePicker, { getFormatedDate, getToday } from 'react-native-modern-datepicker';
 
 export default class AddConcert extends React.Component {
  constructor(props) {
@@ -47,6 +47,8 @@ export default class AddConcert extends React.Component {
         showPickerDateRehearsal: false
     };
 
+    console.log(this.state);
+
     AsyncStorage.getItem('logged_user_id')
          .then((value) => {
          this.setState({user_id: value})
@@ -67,6 +69,8 @@ export default class AddConcert extends React.Component {
     var TourManagerId = this.state.tour_manager_id;
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
+
+    console.log(this.state);
 
     if ((TeamId.value==0 && ArtistName.length==0) || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
       alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
@@ -137,121 +141,55 @@ export default class AddConcert extends React.Component {
   render() {
     const { data_teams, data_events_types, data_teams_managers, isLoading } = this.state;
 
-    const InputWithDatePickerConcert = (props) => {
-        const [date, setDate] = React.useState(new Date());
-        const [showPicker, setShowPicker] = React.useState(false);
+    const ShowConcertDate = () => {
+      const [selectedDate, setSelectedDate] = React.useState(getToday());
 
-        return (
-            <>
-                <Button
-                    style={styles.inputs_half} color='#ADB5BD'
-                    onPress={() => this.setState({showPickerDateConcert: true})}>
-                    <Block row>
-                        <Icon size={16}
-                            color="#ADB5BD"
-                            name="calendar-602x"
-                            family="NowExtra"
-                            style={styles.inputIcons}
-                            onPress={() => this.setState({showPickerDateConcert: true})}
-                        />
-                        <Text
-                            style={{ color: '#ADB5BD' }}
-                            size={14}
-                            color={nowTheme.COLORS.WHITE}>
-                            {this.state.concert_date != '' ? this.state.concert_date : 'Data koncertu *'}
-                        </Text>
-                    </Block>
-                </Button>
-            </>
-        );
-    };
+      const changeDate = (ev) => {
+            this.state.concert_date = ev;
+            console.log(ev);
+            setSelectedDate(this.state.concert_date+' '+this.state.concert_time);
+      }
 
-    const InputWithTimePickerConcert = () => {
-                const [time, setTime] = React.useState(new Date());
-                const [showPicker, setShowPicker] = React.useState(false);
+      const changeTime = (ev) => {
+        this.state.concert_time = ev;
+        setSelectedDate(this.state.concert_date+' '+this.state.concert_time);
+      }
 
-                return (
-                    <>
-                        <Button
-                            style={styles.inputs_half} color='#ADB5BD'
-                            onPress={() => this.setState({showPickerTimeConcert: true})}>
-                            <Block row>
-                                <Icon size={16}
-                                    color="#ADB5BD"
-                                    name="time-alarm2x"
-                                    family="NowExtra"
-                                    style={styles.inputIcons}
-                                    onPress={() => this.setState({showPickerTimeConcert: true})}
-                                />
-                                <Text
-                                    style={{ color: '#ADB5BD' }}
-                                    size={14}
-                                    color={nowTheme.COLORS.WHITE}>
-                                    {this.state.concert_time != '' ? this.state.concert_time : 'Godzina koncertu *'}
-                                </Text>
-                            </Block>
-                        </Button>
-                    </>
-                );
-            };
+      return (
+        <DatePicker
+          selected={getToday()}
+          onDateChange={changeDate}
+          onTimeChange={changeTime}
+          minimumDate={getToday()}
+        />
+      );
 
-   const InputWithDatePickerRehearsal = (props) => {
-           const [date, setDate] = React.useState(new Date());
-           const [showPicker, setShowPicker] = React.useState(false);
+    }
 
-           return (
-               <>
-                    <Button
-                        style={styles.inputs_half} color='#ADB5BD'
-                        onPress={() => this.setState({showPickerDateRehearsal: true})}>
-                        <Block row>
-                            <Icon size={16}
-                                color="#ADB5BD"
-                                name="calendar-602x"
-                                family="NowExtra"
-                                style={styles.inputIcons}
-                                onPress={() => this.setState({showPickerDateRehearsal: true})}
-                            />
-                            <Text
-                                style={{ color: '#ADB5BD' }}
-                                size={14}
-                                color={nowTheme.COLORS.WHITE}>
-                                {this.state.rehearsal_date != '' ? this.state.rehearsal_date : 'Data próby'}
-                            </Text>
-                        </Block>
-                    </Button>
-               </>
-           );
-       };
+    const ShowRehearsalDate = () => {
+          const [selectedDate, setSelectedDate] = React.useState(getToday());
 
-       const InputWithTimePickerRehearsal = () => {
-                   const [time, setTime] = React.useState(new Date());
-                   const [showPicker, setShowPicker] = React.useState(false);
+          const changeDate = (ev) => {
+                this.state.rehearsal_date = ev;
+                console.log(ev);
+                setSelectedDate(this.state.rehearsal_date+' '+this.state.rehearsal_time);
+          }
 
-                   return (
-                       <>
-                            <Button
-                                style={styles.inputs_half} color='#ADB5BD'
-                                onPress={() => this.setState({showPickerTimeRehearsal: true})}>
-                                <Block row>
-                                    <Icon size={16}
-                                        color="#ADB5BD"
-                                        name="time-alarm2x"
-                                        family="NowExtra"
-                                        style={styles.inputIcons}
-                                        onPress={() => this.setState({showPickerTimeRehearsal: true})}
-                                    />
-                                    <Text
-                                        style={{ color: '#ADB5BD' }}
-                                        size={14}
-                                        color={nowTheme.COLORS.WHITE}>
-                                        {this.state.rehearsal_time != '' ? this.state.rehearsal_time : 'Godzina próby'}
-                                    </Text>
-                                </Block>
-                            </Button>
-                       </>
-                   );
-               };
+          const changeTime = (ev) => {
+            this.state.rehearsal_time = ev;
+            setSelectedDate(this.state.rehearsal_date+' '+this.state.rehearsal_time);
+          }
+
+          return (
+            <DatePicker
+              selected={getToday()}
+              onDateChange={changeDate}
+              onTimeChange={changeTime}
+              minimumDate={getToday()}
+            />
+          );
+
+        }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
@@ -309,40 +247,17 @@ export default class AddConcert extends React.Component {
                 onChangeText={place=>this.setState({place})}
             />
           </Block>
-          <Block row middle style={styles.rows}>
-            <FlatList
+          <Block row middle style={styles.only_label}>
+               <Text
+                style={{ color: '#000000' }}
+                size={14}>Data i godzina koncertu</Text>
+           </Block>
+           <Block row middle style={styles.calendar}>
+               <FlatList
                 keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithDatePickerConcert}
-                horizontal={true}
-            />
-            <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithTimePickerConcert}
-                horizontal={true}
-            />
+                ListHeaderComponent={ShowConcertDate}
+          />
           </Block>
-           { this.state.showPickerDateConcert ? (
-                          <DateTimePicker
-                              testID="date-concert-picker"
-                              value={new Date()}
-                              mode="date"
-                              is24Hour={true}
-                              onChange={(_: any, date?: Date) => this.setState({showPickerDateConcert: false}) || this.setState({concert_date: Moment(date).format('DD/MM/YYYY')})}
-                              minimumDate={new Date()}
-                              style={{width: '100%', backgroundColor: "white"}} />
-                           ) : null }
-
-                       { this.state.showPickerTimeConcert ? (
-                          <DateTimePicker
-                              testID="time-concert-picker"
-                              value={new Date()}
-                              mode="time"
-                              is24Hour={true}
-                              onChange={(_: any, time?: Date) => this.setState({showPickerTimeConcert: false}) || this.setState({concert_time: Moment(time).format('HH:mm')})}
-                              timeZoneOffsetInSeconds={3600}
-                              style={{width: '100%', backgroundColor: "white"}}
-                          />
-                          ) : null }
           <Block row middle style={styles.rows}>
             <Input
                 placeholder="Czas trwania w minutach *"
@@ -360,41 +275,17 @@ export default class AddConcert extends React.Component {
                 onChangeText={duration=>this.setState({duration})}
             />
           </Block>
-          <Block row middle style={styles.rows}>
-            <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithDatePickerRehearsal}
-                horizontal={true}
-            />
-            <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithTimePickerRehearsal}
-                horizontal={true}
-            />
+          <Block row middle style={styles.only_label}>
+                         <Text
+                          style={{ color: '#000000' }}
+                          size={14}>Data i godzina próby</Text>
+                     </Block>
+                     <Block row middle style={styles.calendar}>
+                         <FlatList
+                          keyExtractor={(item, index) => item.id + index.toString()}
+                          ListHeaderComponent={ShowRehearsalDate}
+                    />
           </Block>
-
-                       { this.state.showPickerDateRehearsal ? (
-                          <DateTimePicker
-                              testID="date-rehearsal-picker"
-                              value={new Date()}
-                              mode="date"
-                              is24Hour={true}
-                              onChange={(_: any, date?: Date) => this.setState({showPickerDateRehearsal: false}) || this.setState({rehearsal_date: Moment(date).format('DD/MM/YYYY')})}
-                              minimumDate={new Date()}
-                              style={{width: '100%', backgroundColor: "white"}} />
-                          ) : null }
-
-                       { this.state.showPickerTimeRehearsal ? (
-                          <DateTimePicker
-                              testID="time-rehearsal-picker"
-                              value={new Date()}
-                              mode="time"
-                              is24Hour={true}
-                              onChange={(_: any, time?: Date) => this.setState({showPickerTimeRehearsal: false}) || this.setState({rehearsal_time: Moment(time).format('HH:mm')})}
-                              timeZoneOffsetInSeconds={3600}
-                              style={{width: '100%', backgroundColor: "white"}}
-                          />
-                          ) : null }
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dodatkowe informacje
@@ -501,6 +392,13 @@ const styles = StyleSheet.create({
   rows: {
     height: theme.SIZES.BASE * 3.8,
     paddingHorizontal: theme.SIZES.BASE
+  },
+  only_label: {
+    paddingTop: theme.SIZES.BASE
+  },
+  calendar: {
+    paddingHorizontal: theme.SIZES.BASE * 1.5,
+    paddingTop: theme.SIZES.BASE
   },
   rows_big: {
       height: theme.SIZES.BASE * 10,

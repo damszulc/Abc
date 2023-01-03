@@ -28,12 +28,12 @@
       "infoPlist": {
         "NSCalendarsUsageDescription": "Zezwolenie na użycie kalendarza umożliwia dodawanie wydarzeń do swojego kalendarza"
       },
-      "buildNumber": "7"
+      "buildNumber": "8"
     },
     "description": "Anseba App. Created by j7technologies",
     "android": {
       "package": "com.marmozeta.ansebaapp",
-      "versionCode": 3
+      "versionCode": 4
     },
     "extra": {
       "eas": {

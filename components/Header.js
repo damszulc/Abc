@@ -174,7 +174,7 @@ class Header extends React.Component {
                           color={nowTheme.COLORS.HEADER}
                         />
                         <Text style={{ fontFamily: 'montserrat-regular' }} size={15} style={styles.tabTitle}>
-                          {optionRight || 'Montaż'}
+                          {optionRight || 'Technika'}
                         </Text>
                       </Block>
                     </Button> : null;

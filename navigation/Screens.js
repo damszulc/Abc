@@ -91,7 +91,7 @@ function TechniqueStack(props) {
             component={Technique}
             options={{
               header: ({ navigation, scene }) => (
-                <Header title="Montaż audio-wizualny" search options navigation={navigation} scene={scene} />
+                <Header title="Technika" search options navigation={navigation} scene={scene} />
               )
             }}
           />
@@ -166,7 +166,7 @@ function AddTechniqueStack(props) {
         component={AddTechnqiue}
         options={{
           header: ({ navigation, scene }) => (
-            <Header title="Dodaj montaż" navigation={navigation} scene={scene} />
+            <Header title="Dodaj technikę" navigation={navigation} scene={scene} />
           ),
           backgroundColor: '#FFFFFF',
         }}

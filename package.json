@@ -42,6 +42,7 @@
     "react-native-material-dropdown": "^0.11.1",
     "react-native-modal-datetime-picker": "^14.0.1",
     "react-native-modal-dropdown": "git+https://github.com/siemiatj/react-native-modal-dropdown.git",
+    "react-native-modern-datepicker": "^1.0.0-beta.91",
     "react-native-paper": "^5.1.1",
     "react-native-paper-dates": "^0.11.6",
     "react-native-picker-select": "^8.0.4",

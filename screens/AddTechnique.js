@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme, Checkbox } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker, { getFormatedDate, getToday } from 'react-native-modern-datepicker';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 
@@ -136,63 +136,30 @@ export default class AddTechnique extends React.Component {
   render() {
     const { data_events, data_supports_types, data_assembly_types, data_events_types, data_teams_managers, isLoading } = this.state;
 
-    const InputWithDatePickerTechnique = (props) => {
-        const [date, setDate] = React.useState(new Date());
-        const [showPicker, setShowPicker] = React.useState(false);
+        const ShowDate = () => {
+          const [selectedDate, setSelectedDate] = React.useState(getToday());
 
-        return (
-            <>
-                <Button
-                    style={styles.inputs_half} color='#ADB5BD'
-                    onPress={() => this.setState({showPickerDate: true})}>
-                    <Block row>
-                        <Icon size={16}
-                          color="#ADB5BD"
-                          name="calendar-602x"
-                          family="NowExtra"
-                          style={styles.inputIcons}
-                          onPress={() => this.setState({showPickerDate: true})}
-                        />
-                        <Text
-                            style={{ color: '#ADB5BD' }}
-                            size={14}
-                            color={nowTheme.COLORS.WHITE}>
-                            {this.state.assembly_date != '' ? this.state.assembly_date : 'Data montażu *'}
-                        </Text>
-                    </Block>
-                </Button>
-            </>
-        );
-    };
+          const changeDate = (ev) => {
+                this.state.assembly_date = ev;
+                console.log(ev);
+                setSelectedDate(this.state.assembly_date+' '+this.state.assembly_time);
+          }
 
-    const InputWithTimePickerTechnique = () => {
-                const [time, setTime] = React.useState(new Date());
-                const [showPicker, setShowPicker] = React.useState(false);
+          const changeTime = (ev) => {
+            this.state.assembly_time = ev;
+            setSelectedDate(this.state.assembly_date+' '+this.state.assembly_time);
+          }
 
-                return (
-                    <>
-                        <Button
-                            style={styles.inputs_half} color='#ADB5BD'
-                            onPress={() => this.setState({showPickerTime: true})}>
-                            <Block row>
-                                <Icon size={16}
-                                  color="#ADB5BD"
-                                  name="time-alarm2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                  onPress={() => this.setState({showPickerTime: true})}
-                                />
-                                <Text
-                                    style={{ color: '#ADB5BD' }}
-                                    size={14}
-                                    color={nowTheme.COLORS.WHITE}>
-                                    {this.state.assembly_time != '' ? this.state.assembly_time : 'Godzina montażu *'}
-                                </Text>
-                            </Block>
-                        </Button>
-                    </>
-                );
-            };
+          return (
+            <DatePicker
+              selected={getToday()}
+              onDateChange={changeDate}
+              onTimeChange={changeTime}
+              minimumDate={getToday()}
+            />
+          );
+
+        }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
@@ -286,40 +253,17 @@ export default class AddTechnique extends React.Component {
                 onChangeText={place=>this.setState({place})}
             />
           </Block>
-          <Block row middle style={styles.rows}>
-            <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithDatePickerTechnique}
-                horizontal={true}
-            />
-            <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={InputWithTimePickerTechnique}
-                horizontal={true}
-            />
-          </Block>
-            { this.state.showPickerDate ? (
-                      <DateTimePicker
-                          testID="date-picker"
-                          value={new Date()}
-                          mode="date"
-                          is24Hour={true}
-                          onChange={(_: any, date?: Date) => this.setState({showPickerDate: false}) || this.setState({assembly_date: Moment(date).format('DD/MM/YYYY')})}
-                          minimumDate={new Date()}
-                          style={{width: '100%', backgroundColor: "white"}}
-                      />
-                      ) : null }
-                  { this.state.showPickerTime ? (
-                      <DateTimePicker
-                          testID="time-picker"
-                          value={new Date()}
-                          mode="time"
-                          is24Hour={true}
-                          onChange={(_: any, time?: Date) => this.setState({showPickerTime: false}) || this.setState({assembly_time: Moment(time).format('HH:mm')})}
-                          timeZoneOffsetInSeconds={3600}
-                          style={{width: '100%', backgroundColor: "white"}}
-                      />
-                      ) : null }
+          <Block row middle style={styles.only_label}>
+                         <Text
+                          style={{ color: '#000000' }}
+                          size={14}>Data i godzina montażu</Text>
+                     </Block>
+                     <Block row middle style={styles.calendar}>
+                         <FlatList
+                          keyExtractor={(item, index) => item.id + index.toString()}
+                          ListHeaderComponent={ShowDate}
+                    />
+                    </Block>
 
           <Block row middle style={styles.rows}>
             <Input
@@ -432,6 +376,13 @@ const styles = StyleSheet.create({
       height: theme.SIZES.BASE * 10,
       paddingHorizontal: theme.SIZES.BASE
     },
+      only_label: {
+        paddingTop: theme.SIZES.BASE
+      },
+      calendar: {
+        paddingHorizontal: theme.SIZES.BASE * 1.5,
+        paddingTop: theme.SIZES.BASE
+      },
    inputs: {
       borderWidth: 1,
       borderColor: '#E3E3E3',

@@ -158,9 +158,9 @@ class DrawerItem extends React.Component {
         getNewTitle(title) {
             switch(title) {
                 case 'Concerts': return 'Koncerty';
-                case 'Audio Visual Support': return 'Montaż audio-wizualny';
+                case 'Audio Visual Support': return 'Technika';
                 case 'Add Concert': return 'Dodaj koncert';
-                case 'Add Audio Visual Support': return 'Dodaj montaż';
+                case 'Add Audio Visual Support': return 'Dodaj technikę';
                 case 'LOGOUT': return 'WYLOGUJ SIĘ';
             }
         }
