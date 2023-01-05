@@ -12,7 +12,8 @@ export default class Concerts extends Component {
 
     this.state = {
       data: [],
-      isLoading: true
+      isLoading: true,
+      user_id: 0
     };
 
      AsyncStorage.getItem('logged_user_id').then((value) => {
@@ -22,6 +23,7 @@ export default class Concerts extends Component {
   }
 
   async getConcerts(searchPhrase) {
+  console.log('ladowanie koncertow');
     try {
     var Data = { userId: this.state.user_id, searchPhrase: searchPhrase };
       const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_concerts.php', {method: 'POST', body: JSON.stringify(Data)});

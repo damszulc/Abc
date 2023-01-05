@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   View,
   ScrollView,
@@ -12,7 +11,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
-import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 
 import nowTheme from "../constants/Theme";
@@ -54,7 +52,10 @@ export default class AddConcert extends React.Component {
          this.setState({user_id: value})
     });
   }
+
   InsertRecord=()=>{
+   const { navigation } = this.props;
+
     var TeamId = this.state.team_id;
     var ArtistName = this.state.artist_name;
     var Place = this.state.place;
@@ -73,8 +74,9 @@ export default class AddConcert extends React.Component {
     console.log(this.state);
 
     if ((TeamId.value==0 && ArtistName.length==0) || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
-      alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
-    }else{
+     alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
+    }else
+    {
       var APIURL = "http://srv36013.seohost.com.pl/anseba/save_concert.php";
 
       var headers = {
@@ -107,8 +109,8 @@ export default class AddConcert extends React.Component {
       .then((Response)=>Response.json())
       .then((Response)=>{
         if (Response[0].Message == "Success") {
-          console.log("true")
-          this.props.navigation.navigate("Concerts");
+          navigation.replace("Concerts");
+          navigation.navigate("Concerts");
         }
       })
       .catch((error)=>{
@@ -141,52 +143,21 @@ export default class AddConcert extends React.Component {
   render() {
     const { data_teams, data_events_types, data_teams_managers, isLoading } = this.state;
 
-    const ShowConcertDate = () => {
-      const [selectedDate, setSelectedDate] = React.useState(getToday());
-
-      const changeDate = (ev) => {
-            this.state.concert_date = ev;
-            setSelectedDate(this.state.concert_date+' '+this.state.concert_time);
-      }
-
-      const changeTime = (ev) => {
-        this.state.concert_time = ev;
-        setSelectedDate(this.state.concert_date+' '+this.state.concert_time);
-      }
-
-      return (
-        <DatePicker
-          onDateChange={changeDate}
-          onTimeChange={changeTime}
-          minimumDate={getToday()}
-        />
-      );
-
+    const changeConcertDate = (ev) => {
+        this.state.concert_date = ev;
     }
 
-    const ShowRehearsalDate = () => {
-          const [selectedDate, setSelectedDate] = React.useState(getToday());
+    const changeConcertTime = (ev) => {
+        this.state.concert_time = ev;
+    }
 
-          const changeDate = (ev) => {
-                this.state.rehearsal_date = ev;
-                console.log(ev);
-                setSelectedDate(this.state.rehearsal_date+' '+this.state.rehearsal_time);
-          }
+    const changeRehearsalDate = (ev) => {
+       this.state.rehearsal_date = ev;
+    }
 
-          const changeTime = (ev) => {
-            this.state.rehearsal_time = ev;
-            setSelectedDate(this.state.rehearsal_date+' '+this.state.rehearsal_time);
-          }
-
-          return (
-            <DatePicker
-              onDateChange={changeDate}
-              onTimeChange={changeTime}
-              minimumDate={getToday()}
-            />
-          );
-
-        }
+    const changeRehearsalTime = (ev) => {
+       this.state.rehearsal_time = ev;
+    }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
@@ -250,10 +221,12 @@ export default class AddConcert extends React.Component {
                 size={14}>Data i godzina koncertu</Text>
            </Block>
            <Block row middle style={styles.calendar}>
-               <FlatList
-                keyExtractor={(item, index) => item.id + index.toString()}
-                ListHeaderComponent={ShowConcertDate}
-          />
+                <DatePicker
+                selected={getToday()}
+                                                     onDateChange={changeConcertDate}
+                                                     onTimeChange={changeConcertTime}
+                                                     minimumDate={getToday()}
+                                                   />
           </Block>
           <Block row middle style={styles.rows}>
             <Input
@@ -278,10 +251,11 @@ export default class AddConcert extends React.Component {
                           size={14}>Data i godzina próby</Text>
                      </Block>
                      <Block row middle style={styles.calendar}>
-                         <FlatList
-                          keyExtractor={(item, index) => item.id + index.toString()}
-                          ListHeaderComponent={ShowRehearsalDate}
-                    />
+                        <DatePicker
+                                      onDateChange={changeRehearsalDate}
+                                      onTimeChange={changeRehearsalTime}
+                                      minimumDate={getToday()}
+                                    />
           </Block>
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>

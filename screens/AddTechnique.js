@@ -1,7 +1,6 @@
 import React from "react";
 import {
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   View,
   ScrollView,
@@ -13,7 +12,6 @@ import { Block, Text, theme, Checkbox } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
 import DatePicker, { getFormatedDate, getToday } from 'react-native-modern-datepicker';
-import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 
 import nowTheme from "../constants/Theme";
@@ -52,6 +50,8 @@ export default class AddTechnique extends React.Component {
     });
   }
   InsertRecord=()=>{
+    const { navigation } = this.props;
+
     var EventId = this.state.event_id;
     var SupportName = this.state.support_name;
     var SupportTypeId = this.state.support_type_id;
@@ -66,9 +66,9 @@ export default class AddTechnique extends React.Component {
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-   // if (EventId.value==0 || Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || EventTypeId.value==0) {
-   //   alert("Required field is missing !!!");
-   // }else
+    if (EventId.value==0 || Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || EventTypeId.value==0) {
+      alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
+    }else
     {
       var APIURL = "http://srv36013.seohost.com.pl/anseba/save_technique.php";
 
@@ -102,8 +102,8 @@ export default class AddTechnique extends React.Component {
       .then((Response)=>{
       console.log(Response);
         if (Response[0].Message == "Success") {
-          console.log("true")
-          this.props.navigation.navigate("Techniques");
+          navigation.replace("Techniques");
+          navigation.navigate("Techniques");
         }
       })
       .catch((error)=>{
@@ -136,29 +136,13 @@ export default class AddTechnique extends React.Component {
   render() {
     const { data_events, data_supports_types, data_assembly_types, data_events_types, data_teams_managers, isLoading } = this.state;
 
-        const ShowDate = () => {
-          const [selectedDate, setSelectedDate] = React.useState(getToday());
+     const changeDate = (ev) => {
+     this.state.assembly_date = ev;
+     }
 
-          const changeDate = (ev) => {
-                this.state.assembly_date = ev;
-                console.log(ev);
-                setSelectedDate(this.state.assembly_date+' '+this.state.assembly_time);
-          }
-
-          const changeTime = (ev) => {
-            this.state.assembly_time = ev;
-            setSelectedDate(this.state.assembly_date+' '+this.state.assembly_time);
-          }
-
-          return (
-            <DatePicker
-              onDateChange={changeDate}
-              onTimeChange={changeTime}
-              minimumDate={getToday()}
-            />
-          );
-
-        }
+     const changeTime = (ev) => {
+        this.state.assembly_time = ev;
+     }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
@@ -258,10 +242,12 @@ export default class AddTechnique extends React.Component {
                           size={14}>Data i godzina montażu</Text>
                      </Block>
                      <Block row middle style={styles.calendar}>
-                         <FlatList
-                          keyExtractor={(item, index) => item.id + index.toString()}
-                          ListHeaderComponent={ShowDate}
-                    />
+                         <DatePicker
+                            selected={getToday()}
+                            onDateChange={changeDate}
+                            onTimeChange={changeTime}
+                            minimumDate={getToday()}
+                         />
                     </Block>
 
           <Block row middle style={styles.rows}>

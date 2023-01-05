@@ -173,13 +173,18 @@ class DrawerItem extends React.Component {
       focused ? [styles.activeStyle, styles.shadow] : null,
     ];
 
+    const logoutFunc = () => {
+        console.log('kliknieto logout');
+        AsyncStorage.setItem('logged_user_id', '0');
+        navigation.navigate('Onboarding');
+    }
 
     return (
       <TouchableOpacity
         style={{ height: 60 }}
         onPress={() =>
         title == 'LOGOUT' ?
-            (AsyncStorage.setItem('logged_user_id', '0') && navigation.navigate('Onboarding')) :
+            logoutFunc() :
             navigation.navigate(title)
         }
       >
