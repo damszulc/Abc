@@ -218,7 +218,7 @@ export default class AddConcert extends React.Component {
           <Block row middle style={styles.only_label}>
                <Text
                 style={{ color: '#000000' }}
-                size={14}>Data i godzina koncertu</Text>
+                size={14}>Data i godzina koncertu *</Text>
            </Block>
            <Block row middle style={styles.calendar}>
                 <DatePicker

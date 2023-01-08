@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.6",
+    "version": "1.6.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -33,7 +33,7 @@
     "description": "Anseba App. Created by j7technologies",
     "android": {
       "package": "com.marmozeta.ansebaapp",
-      "versionCode": 7
+      "versionCode": 8
     },
     "extra": {
       "eas": {

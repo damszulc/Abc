@@ -239,7 +239,7 @@ export default class AddTechnique extends React.Component {
           <Block row middle style={styles.only_label}>
                          <Text
                           style={{ color: '#000000' }}
-                          size={14}>Data i godzina montażu</Text>
+                          size={14}>Data i godzina montażu *</Text>
                      </Block>
                      <Block row middle style={styles.calendar}>
                          <DatePicker
