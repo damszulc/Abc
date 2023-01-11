@@ -37,15 +37,15 @@ export default class Onboarding extends React.Component {
               </Block>
               <Block middle row
                 style={{
-                  marginLeft: theme.SIZES.BASE * 2.5,
-                  marginRight: theme.SIZES.BASE * 2.5
+                  marginLeft: theme.SIZES.BASE * 2,
+                  marginRight: theme.SIZES.BASE * 2
                 }}>
                 <Text
                   color="white"
-                  size={11}
+                  size={10}
                   style={{ fontFamily: 'montserrat-regular' }}
                 >
-                  Zaprojektowane i wykonane
+                  (v1.3.1) Zaprojektowane i wykonane
                   przez j7technologies
                 </Text>
               </Block>

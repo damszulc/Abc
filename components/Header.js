@@ -47,13 +47,14 @@ class Header extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: true
+      isLoading: true,
+      active: 'concerts'
     };
 
-      AsyncStorage.getItem('logged_user_rights')
+    AsyncStorage.getItem('logged_user_rights')
                  .then((value) => {
                    userType = value;
-                   this.setState({ isLoading: false });
+                   this.setState({ isLoading: false, active: 'concerts' });
                  });
   }
 
@@ -124,6 +125,8 @@ class Header extends React.Component {
   };
   renderSearch = () => {
     const { navigation } = this.props;
+    const { isLoading, active } = this.state;
+
     return (
       <Input
         right
@@ -140,13 +143,13 @@ class Header extends React.Component {
   };
   renderOptions = () => {
     const { navigation, optionLeft, optionRight } = this.props;
-    const { isLoading } = this.state;
+    const { isLoading, active } = this.state;
 
     let concerts = (userType == 'admin' || userType == 'tour_manager' || userType == 'team_member') ?
     <Button
               shadowless
-              style={[styles.tab]}
-              onPress={() => console.log(navigation.navigate('Concerts'))}
+              style={[(this.state.active=='concerts'?styles.tab_active:styles.tab)]}
+              onPress={() => {this.setState({active: 'concerts'}) || navigation.navigate('Concerts')}}
             >
               <Block row middle>
                 <Icon
@@ -164,7 +167,7 @@ class Header extends React.Component {
     : null;
 
     let audio_visual = (userType == 'admin' || userType == 'tour_manager' || userType == 'audio_visual') ?
-    <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Audio Visual Support')}>
+    <Button shadowless style={[(this.state.active=='technique'?styles.tab_active:styles.tab)]} onPress={() => {this.setState({active: 'technique'}) || navigation.navigate('Audio Visual Support')}}>
                       <Block row middle>
                         <Icon
                           size={18}
@@ -206,6 +209,7 @@ class Header extends React.Component {
   };
   renderHeader = () => {
     const { search, options, tabs } = this.props;
+
     if (search || tabs || options) {
       return (
         <Block center>
@@ -328,7 +332,15 @@ const styles = StyleSheet.create({
     width: width * 0.35,
     borderRadius: 0,
     borderWidth: 0,
-    height: 24,
+    height: 34,
+    elevation: 0
+  },
+  tab_active: {
+    backgroundColor: nowTheme.COLORS.PRIMARY,
+    width: width * 0.35,
+    borderRadius: 20,
+    borderWidth: 0,
+    height: 34,
     elevation: 0
   },
   tabTitleLeft: {

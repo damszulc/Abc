@@ -12,6 +12,7 @@ import { Block, Text, theme, Checkbox } from "galio-framework";
 import { Switch, Button, Icon, Input } from "../components";
 
 import DatePicker, { getFormatedDate, getToday } from 'react-native-modern-datepicker';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {Picker} from '@react-native-picker/picker';
 
 import nowTheme from "../constants/Theme";
@@ -21,20 +22,23 @@ export default class AddTechnique extends React.Component {
  constructor(props) {
     super(props);
     this.state = {
-        data_events: [],
+        data_teams: [],
         data_supports_types: [],
         data_assembly_types: [],
         data_events_types: [],
         data_teams_managers: [],
         isLoading: true,
-        event_id: 0,
+        team_id: 0,
         support_name: '',
         support_type_id: 0,
         assembly_type_list: [],
-        assembly_date: '',
-        assembly_time: '',
+        assembly_date: '00:00',
+        assembly_time: getToday(),
         duration: 0,
         place: '',
+        place_id: '',
+        longitude: 0.00,
+        latitude: 0.00,
         event_details: '',
         tour_manager_id: 0,
         event_type_id: 0,
@@ -52,7 +56,7 @@ export default class AddTechnique extends React.Component {
   InsertRecord=()=>{
     const { navigation } = this.props;
 
-    var EventId = this.state.event_id;
+    var TeamId = this.state.team_id;
     var SupportName = this.state.support_name;
     var SupportTypeId = this.state.support_type_id;
     var AssemblyTypeList = this.state.assembly_type_list;
@@ -60,13 +64,16 @@ export default class AddTechnique extends React.Component {
     var AssemblyTime = this.state.assembly_time;
     var Duration = this.state.duration;
     var Place = this.state.place;
+    var PlaceId = this.state.place_id;
+    var Longitude = this.state.longitude;
+    var Latitude = this.state.latitude;
     var EventDetails = this.state.event_details;
     var TourManagerId = this.state.tour_manager_id;
     var EventTypeId = this.state.event_type_id;
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-    if (EventId.value==0 || Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || EventTypeId.value==0) {
+    if (Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || Duration.length==0 || TourManagerId.value==0 || EventTypeId.value==0) {
       alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
     }else
     {
@@ -78,7 +85,7 @@ export default class AddTechnique extends React.Component {
       };
 
       var Data ={
-        EventId: EventId,
+        TeamId: TeamId,
         SupportName: SupportName,
         SupportTypeId: SupportTypeId,
         AssemblyTypeList: AssemblyTypeList.toString(),
@@ -86,6 +93,9 @@ export default class AddTechnique extends React.Component {
         AssemblyTime: AssemblyTime,
         Duration: Duration,
         Place: Place,
+        PlaceId: PlaceId,
+        Longitude: Longitude,
+        Latitude: Latitude,
         EventDetails: EventDetails,
         TourManagerId: TourManagerId,
         EventTypeId: EventTypeId,
@@ -102,8 +112,8 @@ export default class AddTechnique extends React.Component {
       .then((Response)=>{
       console.log(Response);
         if (Response[0].Message == "Success") {
-          navigation.replace("Techniques");
-          navigation.navigate("Techniques");
+          navigation.replace("Technique");
+          navigation.navigate("Audio Visual Support");
         }
       })
       .catch((error)=>{
@@ -116,7 +126,7 @@ export default class AddTechnique extends React.Component {
     try {
       const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_dictionaries.php');
       const json = await response.json();
-      this.setState({ data_events: json.events, data_teams_managers: json.teams_managers, data_supports_types: json.supports_types, data_assembly_types: json.assembly_types, data_events_types: json.technique_types});
+      this.setState({ data_teams: json.teams, data_teams_managers: json.teams_managers, data_supports_types: json.supports_types, data_assembly_types: json.assembly_types, data_events_types: json.technique_types});
     } catch (error) {
       console.log(error);
     } finally {
@@ -134,7 +144,7 @@ export default class AddTechnique extends React.Component {
     this.setState({ [switchNumber]: !this.state[switchNumber] });
 
   render() {
-    const { data_events, data_supports_types, data_assembly_types, data_events_types, data_teams_managers, isLoading } = this.state;
+    const { data_teams, data_supports_types, data_assembly_types, data_events_types, data_teams_managers, isLoading } = this.state;
 
      const changeDate = (ev) => {
      this.state.assembly_date = ev;
@@ -146,9 +156,11 @@ export default class AddTechnique extends React.Component {
 
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.settings}
-      >
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.settings}
+              keyboardShouldPersistTaps='always'
+              listViewDisplayed={false}
+            >
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
@@ -186,10 +198,10 @@ export default class AddTechnique extends React.Component {
           <Block middle style={{paddingTop: 10}}>
             <Block style={styles.rows, styles.inputs_select}>
                 <Picker
-                    selectedValue={this.state.event_id}
-                    onValueChange={(itemValue, itemIndex) => this.setState({event_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Wybierz wydarzenie z listy *' value='0' />
-                        { data_events.map((item, key)=>
+                    selectedValue={this.state.team_id}
+                    onValueChange={(itemValue, itemIndex) => this.setState({team_id: itemValue})}>
+                        <Picker.Item style={{fontSize:14}} label='Wybierz zespół z listy' value='0' />
+                        { data_teams.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
                 </Picker>
@@ -219,22 +231,34 @@ export default class AddTechnique extends React.Component {
                   </Block>
                 )}
           </Block>
-          <Block row middle style={styles.rows}>
-            <Input
-                placeholder="Miejsce montażu *"
-                style={styles.inputs}
-                iconContent={
-                    <Icon
-                        size={16}
-                        color="#ADB5BD"
-                        name="pin-32x"
-                        family="NowExtra"
-                        style={styles.inputIcons}
-                    />
-                }
-                value={this.state.place}
-                onChangeText={place=>this.setState({place})}
-            />
+          <Block row middle style={styles.rows_place}>
+                       <GooglePlacesAutocomplete
+                                                          placeholder='Miejsce montażu *'
+                                                          GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                                                          fetchDetails={true}
+                                                          styles={{textInput: {
+                                                                               backgroundColor: '#ffffff',
+                                                                               height: 44,
+                                                                               borderRadius: 21.5,
+                                                                               paddingVertical: 5,
+                                                                               paddingHorizontal: 25,
+                                                                               fontSize: 14,
+                                                                               flex: 1,
+                                                                               borderColor: '#E3E3E3',
+                                                                               borderWidth: 1,
+                                                                               width: '100%'
+                                                                             }}}
+                                                          onPress={(data: any, details: any = null) => {
+                                                                                                            this.setState({place: data.description});
+                                                                                                            this.setState({place_id: data.place_id});
+                                                                                                            this.setState({longitude: details?.geometry?.location.lng});
+                                                                                                            this.setState({latitude: details?.geometry?.location.lat});
+                                                                                                          }}
+                                                          query={{
+                                                            key: 'AIzaSyAWnOCMVKbWVyrf1qDKaGKRdP7y58ClvqA',
+                                                            language: 'pl'
+                                                          }}
+                                                        />
           </Block>
           <Block row middle style={styles.only_label}>
                          <Text
@@ -272,9 +296,11 @@ export default class AddTechnique extends React.Component {
                 Dodatkowe informacje
             </Text>
           </Block>
-          <Block row middle style={styles.rows}>
+          <Block row middle style={styles.rows_textarea}>
             <Input
                 placeholder="Szczegóły"
+                multiline = {true}
+                numberOfLines = {4}
                 style={styles.inputs_textarea}
                 iconContent={
                     <Icon
@@ -315,7 +341,7 @@ export default class AddTechnique extends React.Component {
           <Block row middle style={styles.rows}>
                       <Input
                           placeholder="Telefon kontaktowy"
-                          style={styles.inputs_textarea}
+                          style={styles.inputs}
                           iconContent={
                               <Icon
                                   size={16}
@@ -328,7 +354,7 @@ export default class AddTechnique extends React.Component {
                           value={this.state.contact_phone}
                           onChangeText={contact_phone=>this.setState({contact_phone})}/>
                     </Block>
-          <Block row middle style={styles.rows, {paddingTop: 10}}>
+          <Block row middle style={styles.rows, {paddingTop: 10, paddingBottom: 200}}>
             <Block center>
                 <Button color="primary" round style={styles.createButton} onPress={()=>{this.InsertRecord()}}>
                     <Text
@@ -357,6 +383,10 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3.8,
     paddingHorizontal: theme.SIZES.BASE
   },
+  rows_place: {
+      paddingHorizontal: theme.SIZES.BASE * 1.3,
+    paddingTop: theme.SIZES.BASE,
+    },
   rows_big: {
       height: theme.SIZES.BASE * 10,
       paddingHorizontal: theme.SIZES.BASE
@@ -384,11 +414,20 @@ const styles = StyleSheet.create({
           backgroundColor: '#ffffff'
         },
     inputs_textarea: {
-          borderWidth: 1,
-          borderColor: '#E3E3E3',
-          borderRadius: 21.5,
-          width: width-40
-        },
+              borderWidth: 1,
+              borderColor: '#E3E3E3',
+              borderRadius: 21.5,
+              width: width-40,
+              height: theme.SIZES.BASE * 5,
+              backgroundColor: '#ffffff',
+              paddingHorizontal: theme.SIZES.BASE,
+            },
+        rows_textarea: {
+            height: theme.SIZES.BASE * 5,
+            paddingHorizontal: theme.SIZES.BASE,
+            marginTop: 7,
+            marginBottom: 7
+          },
     inputs_select: {
         backgroundColor: '#ffffff',
         borderWidth: 1,

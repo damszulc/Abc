@@ -6,6 +6,7 @@ import { Button } from '../components';
 import { Images, nowTheme } from '../constants';
 import { HeaderHeight } from '../constants/utils';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import MapView, {Marker} from 'react-native-maps';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -18,7 +19,8 @@ class Showtech extends React.Component {
 
     this.state = {
       data: [],
-      isLoading: true
+      isLoading: true,
+      isMapReady: false
     };
   }
 
@@ -41,6 +43,10 @@ class Showtech extends React.Component {
     componentDidMount() {
         this.getTechnique();
       }
+
+    onMapLayout = () => {
+        this.setState({ isMapReady: true });
+      };
 
   render() {
     const { navigation } = this.props;
@@ -71,8 +77,12 @@ class Showtech extends React.Component {
       flexDirection: 'column',
       justifyContent: 'space-between',
     }} >
-      <Block flex={1} >
-
+       <Block flex={0.6} >
+              <ImageBackground
+                source={{ uri: data.background }}
+                style={styles.profileContainer}
+                imageStyle={styles.profileBackground}
+              >
           <Block flex style={styles.profileCard}>
             <Block style={{ position: 'absolute', width: width, zIndex: 5, paddingHorizontal: 20 }}>
               <Block style={{ top: height * 0.08 }}>
@@ -100,9 +110,10 @@ class Showtech extends React.Component {
             </Block>
 
           </Block>
+           </ImageBackground>
       </Block>
       <Block />
-      <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: 200}}>
+      <Block flex={0.5} style={{ padding: theme.SIZES.BASE, marginTop: -height * 0.57}}>
         <ScrollView showsVerticalScrollIndicator={false}>
             <Block flex style={{ marginTop: 5 }}>
                         <Block left>
@@ -142,6 +153,28 @@ class Showtech extends React.Component {
                     </Block>
 
           {contact_phone}
+          <Block flex style={{ marginTop: 5 }}>
+                         <MapView
+                            initialRegion={{
+                              latitude: Number(data.latitude),
+                              longitude: Number(data.longitude),
+                              latitudeDelta: 0.0122,
+                              longitudeDelta: 0.0421,
+                            }}
+                            onMapReady={this.onMapLayout}
+                            style={{width: '100%', height: 250, marginTop: 20, marginBottom: 20 }}
+                          >
+                           {this.state.isMapReady && <Marker
+                                      title={data.place}
+                                      coordinate={{
+                                        latitude: Number(data.latitude),
+                                        longitude: Number(data.longitude)
+                                      }}
+                                      onPress={(e) => {Linking.openURL('https://www.google.com/maps/search/?api=1&query='+data.place+'&query_place_id='+data.place_id)}}
+                                   />
+                                   }
+                          </MapView>
+                      </Block>
         </ScrollView>
       </Block>
     </Block>
@@ -161,7 +194,7 @@ const styles = StyleSheet.create({
   profileBackground: {
     width,
     height: height * 0.4,
-    opacity: .3
+    opacity: .1
   },
 
   info: {

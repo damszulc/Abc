@@ -6,12 +6,12 @@ import { nowTheme, tabs } from '../constants';
 import Articles from '../screens/Articles';
 import { Block } from 'galio-framework';
 import Components from '../screens/Components';
-import Technique from '../screens/Technique';
 
 // drawer
 import CustomDrawerContent from './Menu';
 // screens
 import Concerts from '../screens/Concerts';
+import Technique from '../screens/Technique';
 import Onboarding from '../screens/Onboarding';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
@@ -20,7 +20,7 @@ import React from 'react';
 import Register from '../screens/Register';
 import SettingsScreen from '../screens/Settings';
 import AddConcert from '../screens/AddConcert';
-import AddTechnqiue from '../screens/AddTechnique';
+import AddTechnique from '../screens/AddTechnique';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -80,14 +80,14 @@ function ArticlesStack(props) {
 function TechniqueStack(props) {
   return (
     <Stack.Navigator
-      initialRouteName="Audio Visual Support"
+      initialRouteName="Technique"
       screenOptions={{
         mode: 'card',
         headerShown: 'screen',
       }}
     >
     <Stack.Screen
-            name="Audio Visual Support"
+            name="Technique"
             component={Technique}
             options={{
               header: ({ navigation, scene }) => (
@@ -163,7 +163,7 @@ function AddTechniqueStack(props) {
     >
       <Stack.Screen
         name="Add Audio Visual Support 2"
-        component={AddTechnqiue}
+        component={AddTechnique}
         options={{
           header: ({ navigation, scene }) => (
             <Header title="Dodaj technikę" navigation={navigation} scene={scene} />
@@ -171,6 +171,16 @@ function AddTechniqueStack(props) {
           backgroundColor: '#FFFFFF',
         }}
       />
+        <Stack.Screen
+                    name="Technika"
+                    component={Technique}
+                    options={{
+                      header: ({ navigation, scene }) => (
+                        <Header title="Technika" search options navigation={navigation} scene={scene} />
+                      ),
+                      cardStyle: { backgroundColor: '#FFFFFF' },
+                    }}
+                  />
     </Stack.Navigator>
   );
 }

@@ -8,11 +8,12 @@ import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
 
 class Card extends React.Component {
-  async addToCalendar(title, startDateUTC, endUTC) {
+  async addToCalendar(title, startDateUTC, endUTC, place) {
     const eventConfig = {
         title: title,
         startDate: startDateUTC,
-        endDate: endUTC
+        endDate: endUTC,
+        location: place
     };
 
     console.log(eventConfig);
@@ -65,7 +66,7 @@ class Card extends React.Component {
                 color={nowTheme.COLORS.SECONDARY}
               >{item.team_name.toUpperCase()}{"\n"}{item.concert_date}{"\n"}{item.place}</Text>
             </Block>
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Dodaj do kalendarza</Button>
+             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place)}>Dodaj do kalendarza</Button>
           </Block>
         </TouchableWithoutFeedback>
       </Block>

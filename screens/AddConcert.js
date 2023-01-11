@@ -5,7 +5,9 @@ import {
   View,
   ScrollView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList,
+  TextInput
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme } from "galio-framework";
@@ -16,6 +18,7 @@ import {Picker} from '@react-native-picker/picker';
 import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
 import DatePicker, { getFormatedDate, getToday } from 'react-native-modern-datepicker';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 export default class AddConcert extends React.Component {
  constructor(props) {
@@ -28,8 +31,11 @@ export default class AddConcert extends React.Component {
         team_id: 0,
         artist_name: '',
         place: '',
-        concert_date: '',
-        concert_time: '',
+        place_id: '',
+        longitude: 0.00,
+        latitude: 0.00,
+        concert_date: getToday(),
+        concert_time: '00:00:00',
         duration: 0,
         rehearsal_date: '',
         rehearsal_time: '',
@@ -59,6 +65,9 @@ export default class AddConcert extends React.Component {
     var TeamId = this.state.team_id;
     var ArtistName = this.state.artist_name;
     var Place = this.state.place;
+    var PlaceId = this.state.place_id;
+    var Longitude = this.state.longitude;
+    var Latitude = this.state.latitude;
     var ConcertDate = this.state.concert_date;
     var ConcertTime = this.state.concert_time;
     var Duration = this.state.duration;
@@ -88,6 +97,9 @@ export default class AddConcert extends React.Component {
         TeamId: TeamId,
         ArtistName: ArtistName,
         Place: Place,
+        PlaceId: PlaceId,
+        Longitude: Longitude,
+        Latitude: Latitude,
         ConcertDate: ConcertDate,
         ConcertTime: ConcertTime,
         Duration: Duration,
@@ -159,10 +171,14 @@ export default class AddConcert extends React.Component {
        this.state.rehearsal_time = ev;
     }
 
+
     return isLoading ? <ActivityIndicator size="large" /> : (
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
+        keyboardShouldPersistTaps='always'
+        listViewDisplayed={false}
       >
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
@@ -198,23 +214,35 @@ export default class AddConcert extends React.Component {
                           onChangeText={artist_name=>this.setState({artist_name})}
                       />
                     </Block>
-          <Block row middle style={styles.rows}>
-            <Input
-                placeholder="Miejsce koncertu *"
-                style={styles.inputs}
-                iconContent={
-                    <Icon
-                        size={16}
-                        color="#ADB5BD"
-                        name="pin-32x"
-                        family="NowExtra"
-                        style={styles.inputIcons}
-                    />
-                }
-                value={this.state.place}
-                onChangeText={place=>this.setState({place})}
-            />
-          </Block>
+             <Block row middle style={styles.rows_place}>
+             <GooglePlacesAutocomplete
+                                                placeholder='Miejsce koncertu *'
+                                                GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                                                fetchDetails={true}
+                                                styles={{textInput: {
+                                                                     backgroundColor: '#ffffff',
+                                                                     height: 44,
+                                                                     borderRadius: 21.5,
+                                                                     paddingVertical: 5,
+                                                                     paddingHorizontal: 25,
+                                                                     fontSize: 14,
+                                                                     flex: 1,
+                                                                     borderColor: '#E3E3E3',
+                                                                     borderWidth: 1,
+                                                                     width: '100%'
+                                                                   }}}
+                                                onPress={(data: any, details: any = null) => {
+                                                  this.setState({place: data.description});
+                                                  this.setState({place_id: data.place_id});
+                                                  this.setState({longitude: details?.geometry?.location.lng});
+                                                  this.setState({latitude: details?.geometry?.location.lat});
+                                                }}
+                                                query={{
+                                                  key: 'AIzaSyAWnOCMVKbWVyrf1qDKaGKRdP7y58ClvqA',
+                                                  language: 'pl'
+                                                }}
+                                              />
+</Block>
           <Block row middle style={styles.only_label}>
                <Text
                 style={{ color: '#000000' }}
@@ -291,10 +319,12 @@ export default class AddConcert extends React.Component {
                 </Picker>
             </Block>
           </Block>
-          <Block row middle style={styles.rows}>
-            <Input
+          <Block row middle style={styles.rows_textarea}>
+            <TextInput
                 placeholder="Szczegóły koncertu"
                 style={styles.inputs_textarea}
+                multiline = {true}
+                numberOfLines = {4}
                 iconContent={
                     <Icon
                         size={16}
@@ -322,7 +352,7 @@ export default class AddConcert extends React.Component {
           <Block row middle style={styles.rows}>
                                 <Input
                                     placeholder="Telefon kontaktowy"
-                                    style={styles.inputs_textarea}
+                                    style={styles.inputs}
                                     iconContent={
                                         <Icon
                                             size={16}
@@ -335,7 +365,7 @@ export default class AddConcert extends React.Component {
                                     value={this.state.contact_phone}
                                     onChangeText={contact_phone=>this.setState({contact_phone})}/>
                               </Block>
-          <Block row middle style={styles.rows, {paddingTop: 10}}>
+          <Block row middle style={styles.rows, {paddingTop: 10, paddingBottom: 200}}>
             <Block center>
                 <Button color="primary" round style={styles.createButton} onPress={()=>{this.InsertRecord()}}>
                     <Text
@@ -364,6 +394,9 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3.8,
     paddingHorizontal: theme.SIZES.BASE
   },
+  rows_place: {
+      paddingHorizontal: theme.SIZES.BASE * 1.3
+    },
   only_label: {
     paddingTop: theme.SIZES.BASE
   },
@@ -394,8 +427,17 @@ const styles = StyleSheet.create({
           borderWidth: 1,
           borderColor: '#E3E3E3',
           borderRadius: 21.5,
-          width: width-40
+          width: width-40,
+          height: theme.SIZES.BASE * 5,
+          backgroundColor: '#ffffff',
+          paddingHorizontal: theme.SIZES.BASE,
         },
+    rows_textarea: {
+        height: theme.SIZES.BASE * 5,
+        paddingHorizontal: theme.SIZES.BASE,
+        marginTop: 7,
+        marginBottom: 7
+      },
     inputs_select: {
         backgroundColor: '#ffffff',
         borderWidth: 1,
@@ -408,5 +450,5 @@ const styles = StyleSheet.create({
     inputIcons: {
         marginRight: 12,
         color: nowTheme.COLORS.ICON_INPUT
-      },
+      }
 });

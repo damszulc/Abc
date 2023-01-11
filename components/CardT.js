@@ -8,11 +8,12 @@ import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
 
 class CardT extends React.Component {
-  async addToCalendar(title, startDateUTC, endUTC) {
+  async addToCalendar(title, startDateUTC, endUTC, place) {
     const eventConfig = {
         title: title,
         startDate: startDateUTC,
-        endDate: endUTC
+        endDate: endUTC,
+        location: place
     };
 
     console.log(eventConfig);
@@ -48,21 +49,26 @@ class CardT extends React.Component {
       styles.shadow
     ];
 
+    console.log(item);
+
     return (
       <Block row={horizontal} card flex style={cardContainer}>
         <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Showtech', {itemId: item.technique_id})}>
-          <Block row space="between" style={styles.cardDescription}>
-
-              <Text
-                style={{ fontFamily: 'montserrat-regular' }}
-                size={14}
-                style={titleStyles}
-                color={nowTheme.COLORS.SECONDARY}
-              >{item.support_name} {"\n"}{item.assembly_date}{"\n"}{item.place}</Text>
-
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.support_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'))}>Dodaj do kalendarza</Button>
-          </Block>
-        </TouchableWithoutFeedback>
+                  <Block flex style={imgContainer}>
+                    <Image resizeMode="cover" source={{ uri: item.background }} style={imageStyles} />
+                  </Block>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Showtech', {itemId: item.technique_id})}>
+                  <Block flex space="between" style={styles.cardDescription}>
+                    <Block flex>
+                      <Text style={{ fontFamily: 'montserrat-regular' }}
+                                     size={14}
+                                     style={titleStyles}
+                                     color={nowTheme.COLORS.SECONDARY}
+                                   >{(item.support_name!='')?item.support_name+"\n":""}{item.assembly_date}{"\n"}{item.place}</Text></Block>
+                     <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place)}>Dodaj do kalendarza</Button>
+                  </Block>
+                </TouchableWithoutFeedback>
       </Block>
     );
   }
