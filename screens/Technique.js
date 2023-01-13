@@ -25,7 +25,7 @@ export default class Technique extends Component {
     try {
     console.log(this.state.user_id);
     var Data = { userId: this.state.user_id, searchPhrase: searchPhrase };
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_technique.php', {method: 'POST', body: JSON.stringify(Data)});
+      const response = await fetch('http://anseba.nazwa.pl/app/get_technique.php', {method: 'POST', body: JSON.stringify(Data)});
       const json = await response.json();
       this.setState({ data: json.technique });
     } catch (error) {

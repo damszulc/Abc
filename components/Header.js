@@ -145,6 +145,8 @@ class Header extends React.Component {
     const { navigation, optionLeft, optionRight } = this.props;
     const { isLoading, active } = this.state;
 
+    console.log(this.state.active);
+
     let concerts = (userType == 'admin' || userType == 'tour_manager' || userType == 'team_member') ?
     <Button
               shadowless
@@ -336,7 +338,7 @@ const styles = StyleSheet.create({
     elevation: 0
   },
   tab_active: {
-    backgroundColor: nowTheme.COLORS.PRIMARY,
+    backgroundColor: theme.COLORS.TRANSPARENT,
     width: width * 0.35,
     borderRadius: 20,
     borderWidth: 0,

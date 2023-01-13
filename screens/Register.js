@@ -37,7 +37,7 @@ class Register extends React.Component {
     if ((Email.length==0) || (Password.length==0)){
       alert("Required Field Is Missing!!!");
     }else{
-      var APIURL = "http://srv36013.seohost.com.pl/anseba/login.php";
+      var APIURL = "http://anseba.nazwa.pl/app/login.php";
 
       var headers = {
         'Accept' : 'application/json',

@@ -77,7 +77,7 @@ export default class AddTechnique extends React.Component {
       alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
     }else
     {
-      var APIURL = "http://srv36013.seohost.com.pl/anseba/save_technique.php";
+      var APIURL = "http://anseba.nazwa.pl/app/save_technique.php";
 
       var headers = {
         'Accept' : 'application/json',
@@ -124,7 +124,7 @@ export default class AddTechnique extends React.Component {
 
   async getDictionaries() {
     try {
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_dictionaries.php');
+      const response = await fetch('http://anseba.nazwa.pl/app/get_dictionaries.php');
       const json = await response.json();
       this.setState({ data_teams: json.teams, data_teams_managers: json.teams_managers, data_supports_types: json.supports_types, data_assembly_types: json.assembly_types, data_events_types: json.technique_types});
     } catch (error) {

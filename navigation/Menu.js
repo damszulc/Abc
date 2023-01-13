@@ -17,7 +17,7 @@ function CustomDrawerContent({ drawerPosition, navigation, profile, focused, sta
       userType = value;
     });
   const insets = useSafeArea();
-  const screens = ['Concerts', 'Audio Visual Support'];
+  const screens = (userType == 'admin' || userType == 'tour_manager') ? ['Concerts', 'Audio Visual Support'] : (userType == 'audio_visual' ? ['Audio Visual Support'] : ['Concerts']);
   const screens_management = ['Add Concert', 'Add Audio Visual Support'];
   return (
     <Block style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>

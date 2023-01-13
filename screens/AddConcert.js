@@ -86,7 +86,7 @@ export default class AddConcert extends React.Component {
      alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
     }else
     {
-      var APIURL = "http://srv36013.seohost.com.pl/anseba/save_concert.php";
+      var APIURL = "http://anseba.nazwa.pl/app/save_concert.php";
 
       var headers = {
         'Accept' : 'application/json',
@@ -133,7 +133,7 @@ export default class AddConcert extends React.Component {
 
   async getDictionaries() {
     try {
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_dictionaries.php');
+      const response = await fetch('http://anseba.nazwa.pl/app/get_dictionaries.php');
       const json = await response.json();
       this.setState({ data_teams: json.teams, data_events_types: json.events_types, data_teams_managers: json.teams_managers });
     } catch (error) {

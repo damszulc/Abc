@@ -30,7 +30,7 @@ class Showtech extends React.Component {
     try {
     var Data = { itemId: this.props.route.params?.itemId };
     console.log(Data);
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_technique.php', {method: 'POST', body: JSON.stringify(Data)});
+      const response = await fetch('http://anseba.nazwa.pl/app/get_technique.php', {method: 'POST', body: JSON.stringify(Data)});
       const json = await response.json();
       this.setState({ data: json.technique });
     } catch (error) {

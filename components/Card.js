@@ -1,19 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Image, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Block, Text, theme, Button } from 'galio-framework';
 import {useNavigation} from '@react-navigation/native';
 import { nowTheme } from '../constants';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+let userType;
 
 class Card extends React.Component {
-  async addToCalendar(title, startDateUTC, endUTC, place) {
+  async addToCalendar(title, startDateUTC, endUTC, place, description) {
     const eventConfig = {
         title: title,
         startDate: startDateUTC,
         endDate: endUTC,
-        location: place
+        location: place,
+        notes: description
     };
 
     console.log(eventConfig);
@@ -25,6 +29,47 @@ class Card extends React.Component {
        console.warn(error);
     });
   }
+
+    async showAlert(item_id) {
+        Alert.alert('Uwaga', 'Czy na pewno chcesz usunąć ten koncert?', [
+                  {
+                    text: 'Anuluj',
+                    style: 'cancel',
+                  },
+                  {text: 'OK', onPress: () => this.removeItem(item_id)},
+                ]);
+    }
+
+    async removeItem(item_id) {
+      const { navigation } = this.props;
+       var APIURL = "http://anseba.nazwa.pl/app/remove_concert.php";
+
+       var headers = {
+               'Accept' : 'application/json',
+               'Content-Type' : 'application/json'
+             };
+
+         var Data ={
+                 ItemId: item_id
+                 }
+
+          fetch(APIURL,{
+               method: 'POST',
+               headers: headers,
+               body: JSON.stringify(Data)
+             })
+             .then((Response)=>Response.json())
+             .then((Response)=>{
+             console.log(Response);
+               if (Response[0].Message == "Success") {
+                 navigation.replace("Concerts");
+                 navigation.navigate("Concerts");
+               }
+             })
+             .catch((error)=>{
+               console.error("ERROR FOUND" + error);
+             })
+    }
 
   render() {
     const {
@@ -49,6 +94,15 @@ class Card extends React.Component {
       styles.shadow
     ];
 
+    let button_remove;
+            AsyncStorage.getItem('logged_user_rights')
+                    .then((value) => {
+                      userType = value;
+                      });
+
+         button_remove = (userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.concert_id)}>Usuń koncert</Button> : null);
+
+
     return (
       <Block row={horizontal} card flex style={cardContainer}>
         <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Profile', {itemId: item.concert_id})}>
@@ -66,7 +120,8 @@ class Card extends React.Component {
                 color={nowTheme.COLORS.SECONDARY}
               >{item.team_name.toUpperCase()}{"\n"}{item.concert_date}{"\n"}{item.place}</Text>
             </Block>
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place)}>Dodaj do kalendarza</Button>
+            {button_remove}
+             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button>
           </Block>
         </TouchableWithoutFeedback>
       </Block>
@@ -110,7 +165,7 @@ const styles = StyleSheet.create({
     // borderRadius: 3,
   },
   horizontalImage: {
-    height: 122,
+    height: 170,
     width: 'auto'
   },
   horizontalStyles: {
@@ -132,12 +187,21 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   articleButton: {
-    fontFamily: 'montserrat-bold',
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    width: 130,
-    height: 30
-  }
+      fontFamily: 'montserrat-bold',
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+      width: '90%',
+      height: 25,
+    },
+    removeButton: {
+      fontFamily: 'montserrat-bold',
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+      width: '90%',
+      height: 25,
+      backgroundColor: 'red',
+      marginBottom: 0
+    }
 });
 
 export default function(props) {

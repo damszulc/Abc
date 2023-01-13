@@ -1,19 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Image, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Block, Text, theme, Button } from 'galio-framework';
 import {useNavigation} from '@react-navigation/native';
 import { nowTheme } from '../constants';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+let userType;
 
 class CardT extends React.Component {
-  async addToCalendar(title, startDateUTC, endUTC, place) {
+  async addToCalendar(title, startDateUTC, endUTC, place, description) {
     const eventConfig = {
         title: title,
         startDate: startDateUTC,
         endDate: endUTC,
-        location: place
+        location: place,
+        notes: description
     };
 
     console.log(eventConfig);
@@ -24,6 +28,47 @@ class CardT extends React.Component {
     .catch((error:string)=>{
        console.warn(error);
     });
+  }
+
+  async showAlert(item_id) {
+      Alert.alert('Uwaga', 'Czy na pewno chcesz usunąć ten montaż?', [
+                {
+                  text: 'Anuluj',
+                  style: 'cancel',
+                },
+                {text: 'OK', onPress: () => this.removeItem(item_id)},
+              ]);
+  }
+
+  async removeItem(item_id) {
+    const { navigation } = this.props;
+     var APIURL = "http://anseba.nazwa.pl/app/remove_technique.php";
+
+     var headers = {
+             'Accept' : 'application/json',
+             'Content-Type' : 'application/json'
+           };
+
+       var Data ={
+               ItemId: item_id
+               }
+
+        fetch(APIURL,{
+             method: 'POST',
+             headers: headers,
+             body: JSON.stringify(Data)
+           })
+           .then((Response)=>Response.json())
+           .then((Response)=>{
+           console.log(Response);
+             if (Response[0].Message == "Success") {
+               navigation.replace("Technique");
+               navigation.navigate("Audio Visual Support");
+             }
+           })
+           .catch((error)=>{
+             console.error("ERROR FOUND" + error);
+           })
   }
 
   render() {
@@ -39,7 +84,6 @@ class CardT extends React.Component {
       titleStyle
     } = this.props;
 
-
     const imageStyles = [full ? styles.fullImage : styles.horizontalImage, imageStyle];
     const titleStyles = [styles.cardTitle, titleStyle];
     const cardContainer = [styles.card, styles.shadow, style];
@@ -48,8 +92,13 @@ class CardT extends React.Component {
       horizontal ? styles.horizontalStyles : styles.verticalStyles,
       styles.shadow
     ];
+let button_remove;
+        AsyncStorage.getItem('logged_user_rights')
+                .then((value) => {
+                  userType = value;
+                  });
 
-    console.log(item);
+     button_remove = (userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.technique_id)}>Usuń montaż</Button> : null);
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
@@ -66,7 +115,9 @@ class CardT extends React.Component {
                                      style={titleStyles}
                                      color={nowTheme.COLORS.SECONDARY}
                                    >{(item.support_name!='')?item.support_name+"\n":""}{item.assembly_date}{"\n"}{item.place}</Text></Block>
-                     <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place)}>Dodaj do kalendarza</Button>
+                     {button_remove}
+                     <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button>
+
                   </Block>
                 </TouchableWithoutFeedback>
       </Block>
@@ -110,7 +161,7 @@ const styles = StyleSheet.create({
     // borderRadius: 3,
   },
   horizontalImage: {
-    height: 122,
+    height: 170,
     width: 'auto'
   },
   horizontalStyles: {
@@ -135,8 +186,17 @@ const styles = StyleSheet.create({
     fontFamily: 'montserrat-bold',
     paddingHorizontal: 0,
     paddingVertical: 0,
-    width: 130,
-    height: 30,
+    width: '90%',
+    height: 25,
+  },
+  removeButton: {
+    fontFamily: 'montserrat-bold',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    width: '90%',
+    height: 25,
+    backgroundColor: 'red',
+    marginBottom: 0
   }
 });
 

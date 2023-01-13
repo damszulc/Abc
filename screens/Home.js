@@ -15,7 +15,7 @@ export default class Home extends Component {
 
   async getConcerts() {
     try {
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_concerts.php');
+      const response = await fetch('http://anseba.nazwa.pl/app/get_concerts.php');
       const json = await response.json();
       this.setState({ data: json.articles });
     } catch (error) {

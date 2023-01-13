@@ -5,6 +5,9 @@ const { width } = Dimensions.get("screen");
 import { Block, NavBar, theme } from 'galio-framework';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import nowTheme from '../constants/Theme';
+import {useNavigation} from '@react-navigation/native';
+
+let userType;
 
 export default class Concerts extends Component {
   constructor(props) {
@@ -16,6 +19,12 @@ export default class Concerts extends Component {
       user_id: 0
     };
 
+        AsyncStorage.getItem('logged_user_rights')
+                     .then((value) => {
+                       userType = value;
+                       this.setState({ isLoading: false, active: 'concerts' });
+                     });
+
      AsyncStorage.getItem('logged_user_id').then((value) => {
         this.setState({user_id: value});
         this.getConcerts('');
@@ -23,10 +32,9 @@ export default class Concerts extends Component {
   }
 
   async getConcerts(searchPhrase) {
-  console.log('ladowanie koncertow');
     try {
     var Data = { userId: this.state.user_id, searchPhrase: searchPhrase };
-      const response = await fetch('http://srv36013.seohost.com.pl/anseba/get_concerts.php', {method: 'POST', body: JSON.stringify(Data)});
+      const response = await fetch('http://anseba.nazwa.pl/app/get_concerts.php', {method: 'POST', body: JSON.stringify(Data)});
       const json = await response.json();
       this.setState({ data: json.articles });
     } catch (error) {
@@ -38,6 +46,9 @@ export default class Concerts extends Component {
 
   render() {
     const { data, isLoading } = this.state;
+    const { navigation } = this.props;
+
+    if(userType=='audio_visual') navigation.navigate('Audio Visual Support');
 
     return (
       <View style={{ flex: 1, padding: 24 }}>
