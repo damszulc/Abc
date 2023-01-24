@@ -168,7 +168,7 @@ class Header extends React.Component {
             </Button>
     : null;
 
-    let audio_visual = (userType == 'admin' || userType == 'tour_manager' || userType == 'audio_visual') ?
+    let technical = (userType == 'admin' || userType == 'tour_manager' || userType == 'technical') ?
     <Button shadowless style={[(this.state.active=='technique'?styles.tab_active:styles.tab)]} onPress={() => {this.setState({active: 'technique'}) || navigation.navigate('Audio Visual Support')}}>
                       <Block row middle>
                         <Icon
@@ -190,7 +190,7 @@ class Header extends React.Component {
                            </View> :
       <Block row style={styles.options}>
         {concerts}
-         {audio_visual}
+        {technical}
       </Block>
     );
   };

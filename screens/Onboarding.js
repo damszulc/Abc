@@ -9,18 +9,37 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
     let userId = 0;
 
-    let startEkran = "Register";
-    AsyncStorage.getItem('logged_user_id')
-        .then((value) => {
-          userId = value;
-          startEkran = (userId > 0) ? "App" : "Register"
-        });
-
 export default class Onboarding extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      startEkran: "",
+      isLoading: true
+    };
+
+     AsyncStorage.getItem('logged_user_id').then((value) => {
+        this.setState({user_id: value, startEkran: (value>0)?"App":"Register"});
+     });
+  }
+
   render() {
     const { navigation } = this.props;
 
-
+    let button_start = (this.state.startEkran!="") ?
+                    <Button
+                      shadowless
+                      style={styles.button}
+                      color={nowTheme.COLORS.PRIMARY}
+                      onPress={() => navigation.navigate(this.state.startEkran)}
+                    >
+                      <Text
+                        style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
+                        color={theme.COLORS.WHITE}
+                      >
+                        ROZPOCZNIJ
+                      </Text>
+                    </Button> : null;
 
     return (
       <Block flex style={styles.container}>
@@ -45,7 +64,7 @@ export default class Onboarding extends React.Component {
                   size={10}
                   style={{ fontFamily: 'montserrat-regular' }}
                 >
-                  (v1.4.0) Zaprojektowane i wykonane
+                  (v1.5.3) Zaprojektowane i wykonane
                   przez j7technologies
                 </Text>
               </Block>
@@ -57,19 +76,7 @@ export default class Onboarding extends React.Component {
                   marginBottom: theme.SIZES.BASE * 2
                 }}
               >
-                <Button
-                  shadowless
-                  style={styles.button}
-                  color={nowTheme.COLORS.PRIMARY}
-                  onPress={() => navigation.navigate(startEkran)}
-                >
-                  <Text
-                    style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
-                    color={theme.COLORS.WHITE}
-                  >
-                    ROZPOCZNIJ
-                  </Text>
-                </Button>
+                {button_start}
               </Block>
             </Block>
           </Block>

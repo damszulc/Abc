@@ -110,11 +110,21 @@ function TechniqueStack(props) {
                   component={Showtech}
                   options={{
                     header: ({ navigation, scene }) => (
-                      <Header title="" title="Informacje o montażu" back scene={scene} />
+                      <Header title="Informacje o montażu" back scene={scene} />
                     ),
                     headerTransparent: false,
                   }}
                 />
+             <Stack.Screen
+                                 name="Add Technique"
+                                 component={AddTechnique}
+                                 options={{
+                                   header: ({ navigation, scene }) => (
+                                     <Header title="Edytuj montaż" back scene={scene} />
+                                   ),
+                                   headerTransparent: false,
+                                 }}
+                               />
     </Stack.Navigator>
   );
 }
@@ -303,7 +313,16 @@ function ConcertsStack(props) {
                 headerTransparent: false,
               }}
             />
-
+        <Stack.Screen
+                      name="Add Concert"
+                      component={AddConcert}
+                      options={{
+                        header: ({ navigation, scene }) => (
+                          <Header title="Edytuj koncert" back scene={scene} />
+                        ),
+                        headerTransparent: false,
+                      }}
+                    />
     </Stack.Navigator>
   );
 }

@@ -48,7 +48,7 @@ export default class Concerts extends Component {
     const { data, isLoading } = this.state;
     const { navigation } = this.props;
 
-    if(userType=='audio_visual') navigation.navigate('Audio Visual Support');
+    if(userType=='technical') navigation.navigate('Audio Visual Support');
 
     return (
       <View style={{ flex: 1, padding: 24 }}>

@@ -35,7 +35,7 @@ class Register extends React.Component {
     var Password = this.state.password;
 
     if ((Email.length==0) || (Password.length==0)){
-      alert("Required Field Is Missing!!!");
+      alert("Proszę wypełnić pola logowania!");
     }else{
       var APIURL = "http://anseba.nazwa.pl/app/login.php";
 
@@ -61,6 +61,9 @@ class Register extends React.Component {
           AsyncStorage.setItem('logged_user_id', Response[0].UserId);
           AsyncStorage.setItem('logged_user_rights', Response[0].UserType);
           this.props.navigation.navigate("App");
+        }
+        else {
+            alert("Nieprawidłowe dane logowania!");
         }
         console.log(Data);
       })

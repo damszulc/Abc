@@ -23,11 +23,15 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 export default class AddConcert extends React.Component {
  constructor(props) {
     super(props);
+
+  console.log(this.props.route.params?.itemId);
+
     this.state = {
         data_teams: [],
         data_events_types: [],
         data_teams_managers: [],
         isLoading: true,
+        concert_id: 0,
         team_id: 0,
         artist_name: '',
         place: '',
@@ -35,10 +39,10 @@ export default class AddConcert extends React.Component {
         longitude: 0.00,
         latitude: 0.00,
         concert_date: getToday(),
-        concert_time: '00:00:00',
+        concert_time: '00:00',
         duration: 0,
-        rehearsal_date: '',
-        rehearsal_time: '',
+        rehearsal_date: getToday(),
+        rehearsal_time: '00:00',
         sets_number: 0,
         event_details: '',
         event_type_id: 0,
@@ -51,17 +55,47 @@ export default class AddConcert extends React.Component {
         showPickerDateRehearsal: false
     };
 
-    console.log(this.state);
-
     AsyncStorage.getItem('logged_user_id')
          .then((value) => {
          this.setState({user_id: value})
     });
   }
 
+   async getConcert() {
+     const { navigation } = this.props;
+      try {
+      var Data = { itemId: this.props.route.params?.itemId };
+        const response = await fetch('http://anseba.nazwa.pl/app/get_concert_for_edition.php', {method: 'POST', body: JSON.stringify(Data)});
+        const json = await response.json();
+        const data = json.articles;
+        this.setState({ concert_id: data.concert_id,
+                        team_id: data.team_id,
+                        artist_name: data.artist_name,
+                        place: data.place,
+                        place_id: data.place_id,
+                        longitude: data.longitude,
+                        latitude: data.latitude,
+                        concert_date: data.concert_date,
+                        concert_time: data.concert_time,
+                        duration: data.duration,
+                        rehearsal_date: data.rehearsal_date,
+                        rehearsal_time: data.rehearsal_time,
+                        sets_number: data.sets_number,
+                        event_details: data.event_details,
+                        event_type_id: data.event_type_id,
+                        tour_manager_id: data.tour_manager_id,
+                        contact_phone: data.contact_phone });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+
   InsertRecord=()=>{
    const { navigation } = this.props;
 
+    var ConcertId = this.state.concert_id;
     var TeamId = this.state.team_id;
     var ArtistName = this.state.artist_name;
     var Place = this.state.place;
@@ -80,12 +114,6 @@ export default class AddConcert extends React.Component {
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-    console.log(this.state);
-
-    if ((TeamId.value==0 && ArtistName.length==0) || Place.length==0 || ConcertDate.length==0 || ConcertTime.length==0 || EventTypeId.value==0) {
-     alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
-    }else
-    {
       var APIURL = "http://anseba.nazwa.pl/app/save_concert.php";
 
       var headers = {
@@ -94,6 +122,7 @@ export default class AddConcert extends React.Component {
       };
 
       var Data ={
+        ConcertId: ConcertId,
         TeamId: TeamId,
         ArtistName: ArtistName,
         Place: Place,
@@ -120,6 +149,7 @@ export default class AddConcert extends React.Component {
       })
       .then((Response)=>Response.json())
       .then((Response)=>{
+      console.log(Response);
         if (Response[0].Message == "Success") {
           navigation.replace("Concerts");
           navigation.navigate("Concerts");
@@ -128,7 +158,7 @@ export default class AddConcert extends React.Component {
       .catch((error)=>{
         console.error("ERROR FOUND" + error);
       })
-    }
+
   }
 
   async getDictionaries() {
@@ -139,12 +169,13 @@ export default class AddConcert extends React.Component {
     } catch (error) {
       console.log(error);
     } finally {
-      this.setState({ isLoading: false });
+      //this.setState({ isLoading: false });
     }
   }
 
   componentDidMount() {
     this.getDictionaries();
+    this.getConcert();
   }
 
   state = {};
@@ -171,6 +202,19 @@ export default class AddConcert extends React.Component {
        this.state.rehearsal_time = ev;
     }
 
+    const currentDateConcert = () => {
+        if(this.state.concert_date!='' && this.state.concert_date!='0000/00/00' && this.state.concert_date!='1970/01/01') {
+            return this.state.concert_date+" "+this.state.concert_time;
+        }
+        else return getToday();
+    }
+
+    const currentDateRehearsal = () => {
+        if(this.state.rehearsal_date!='' && this.state.rehearsal_date!='0000/00/00' && this.state.rehearsal_date!='1970/01/01') {
+            return this.state.rehearsal_date+" "+this.state.rehearsal_time;
+        }
+        else return getToday();
+    }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
 
@@ -216,9 +260,12 @@ export default class AddConcert extends React.Component {
                     </Block>
              <Block row middle style={styles.rows_place}>
              <GooglePlacesAutocomplete
-                                                placeholder='Miejsce koncertu *'
+                                                placeholder='Miejsce koncertu'
                                                 GooglePlacesDetailsQuery={{ fields: "geometry" }}
                                                 fetchDetails={true}
+                                                textInputProps={{
+                                                  value: (this.state.place!='') ? this.state.place : this.value
+                                                }}
                                                 styles={{textInput: {
                                                                      backgroundColor: '#ffffff',
                                                                      height: 44,
@@ -241,16 +288,34 @@ export default class AddConcert extends React.Component {
                                                   key: 'AIzaSyAWnOCMVKbWVyrf1qDKaGKRdP7y58ClvqA',
                                                   language: 'pl'
                                                 }}
+
+                                                          renderRightButton={() => (
+                                                          						<TouchableOpacity
+                                                          							style={styles.clearButton}
+                                                          							onPress={() => {
+                                                          								this.setState({place: ''});
+                                                          							}}
+                                                          						>
+                                                          							<Icon
+                                                                                                            size={16}
+                                                                                                            color="#ADB5BD"
+                                                                                                            name="simple-remove2x"
+                                                                                                            family="NowExtra"
+                                                                                                            style={styles.removeIcons}
+                                                                                                        />
+                                                          						</TouchableOpacity>
+                                                          					)}
                                               />
 </Block>
           <Block row middle style={styles.only_label}>
                <Text
                 style={{ color: '#000000' }}
-                size={14}>Data i godzina koncertu *</Text>
+                size={14}>Data i godzina koncertu</Text>
            </Block>
            <Block row middle style={styles.calendar}>
                 <DatePicker
-                selected={getToday()}
+                     selected={currentDateConcert()}
+                     current={currentDateConcert()}
                                                      onDateChange={changeConcertDate}
                                                      onTimeChange={changeConcertTime}
                                                      minimumDate={getToday()}
@@ -258,7 +323,7 @@ export default class AddConcert extends React.Component {
           </Block>
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Czas trwania w minutach *"
+                placeholder="Czas trwania w minutach"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -280,6 +345,8 @@ export default class AddConcert extends React.Component {
                      </Block>
                      <Block row middle style={styles.calendar}>
                         <DatePicker
+                                selected={currentDateRehearsal()}
+                                current={currentDateRehearsal()}
                                       onDateChange={changeRehearsalDate}
                                       onTimeChange={changeRehearsalTime}
                                       minimumDate={getToday()}
@@ -312,7 +379,7 @@ export default class AddConcert extends React.Component {
                 <Picker
                     selectedValue={this.state.event_type_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({event_type_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj koncertu z listy *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj koncertu z listy' value='0' />
                         { data_events_types.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -342,7 +409,7 @@ export default class AddConcert extends React.Component {
                 <Picker
                     selectedValue={this.state.tour_manager_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({tour_manager_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy' value='0' />
                         { data_teams_managers.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -450,5 +517,18 @@ const styles = StyleSheet.create({
     inputIcons: {
         marginRight: 12,
         color: nowTheme.COLORS.ICON_INPUT
-      }
+      },
+      clearButton: {
+               backgroundColor: '#cccccc',
+               borderRadius: 20,
+               width: 26,
+               height: 26,
+               marginLeft: -35,
+               marginTop: 8,
+             },
+             removeIcons: {
+                     color: nowTheme.COLORS.ICON_INPUT,
+                     marginLeft: 5,
+                     marginTop: 5,
+                   }
 });

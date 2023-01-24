@@ -5,7 +5,8 @@ import {
   View,
   ScrollView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  SafeAreaView
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme, Checkbox } from "galio-framework";
@@ -28,12 +29,13 @@ export default class AddTechnique extends React.Component {
         data_events_types: [],
         data_teams_managers: [],
         isLoading: true,
+        technique_id: 0,
         team_id: 0,
         support_name: '',
         support_type_id: 0,
         assembly_type_list: [],
-        assembly_date: '00:00',
-        assembly_time: getToday(),
+        assembly_date: getToday(),
+        assembly_time: '00:00',
         duration: 0,
         place: '',
         place_id: '',
@@ -53,9 +55,43 @@ export default class AddTechnique extends React.Component {
          this.setState({user_id: value})
     });
   }
+
+   async getTechnique() {
+     const { navigation } = this.props;
+     {this.props.route.params?.itemId}
+      try {
+      var Data = { itemId: this.props.route.params?.itemId };
+        const response = await fetch('http://anseba.nazwa.pl/app/get_technique_for_edition.php', {method: 'POST', body: JSON.stringify(Data)});
+        const json = await response.json();
+        const data = json.technique;
+        console.log(data);
+        this.setState({ technique_id: data.technique_id,
+                        team_id: data.team_id,
+                        support_name: data.support_name,
+                        support_type_id: data.support_type_id,
+                        assembly_type_list: data.assembly_types.split(','),
+                        assembly_date: data.assembly_date,
+                        assembly_time: data.assembly_time,
+                        duration: data.duration,
+                        place: data.place,
+                        place_id: data.place_id,
+                        longitude: data.longitude,
+                        latitude: data.latitude,
+                        event_details: data.event_details,
+                        tour_manager_id: data.tour_manager_id,
+                        event_type_id: data.event_type_id,
+                        contact_phone: data.contact_phone });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+
   InsertRecord=()=>{
     const { navigation } = this.props;
 
+    var TechniqueId = this.state.technique_id;
     var TeamId = this.state.team_id;
     var SupportName = this.state.support_name;
     var SupportTypeId = this.state.support_type_id;
@@ -73,10 +109,6 @@ export default class AddTechnique extends React.Component {
     var ContactPhone = this.state.contact_phone;
     var UserId = this.state.user_id;
 
-    if (Place.length==0 || AssemblyDate.length==0 || AssemblyTime.length==0 || Duration.length==0 || TourManagerId.value==0 || EventTypeId.value==0) {
-      alert("Proszę wypełnić pola oznaczone gwiazdką !!!");
-    }else
-    {
       var APIURL = "http://anseba.nazwa.pl/app/save_technique.php";
 
       var headers = {
@@ -85,6 +117,7 @@ export default class AddTechnique extends React.Component {
       };
 
       var Data ={
+        TechniqueId: TechniqueId,
         TeamId: TeamId,
         SupportName: SupportName,
         SupportTypeId: SupportTypeId,
@@ -119,7 +152,7 @@ export default class AddTechnique extends React.Component {
       .catch((error)=>{
         console.error("ERROR FOUND" + error);
       })
-    }
+
   }
 
   async getDictionaries() {
@@ -130,12 +163,13 @@ export default class AddTechnique extends React.Component {
     } catch (error) {
       console.log(error);
     } finally {
-      this.setState({ isLoading: false });
+      //this.setState({ isLoading: false });
     }
   }
 
   componentDidMount() {
     this.getDictionaries();
+    this.getTechnique();
   }
 
   state = {};
@@ -154,6 +188,21 @@ export default class AddTechnique extends React.Component {
         this.state.assembly_time = ev;
      }
 
+     const currentDate = () => {
+             if(this.state.assembly_date!='' && this.state.assembly_date!='0000/00/00' && this.state.assembly_date!='1970/01/01') {
+                 return this.state.assembly_date+" "+this.state.assembly_time;
+             }
+             else return getToday();
+         }
+
+     const checkAssemblyValue = (value) => {
+        let ret = false;
+           { this.state.assembly_type_list.map((item, key)=>
+                {if(item === value) ret = true;}
+           )}
+        return ret;
+     }
+
     return isLoading ? <ActivityIndicator size="large" /> : (
       <ScrollView
               showsVerticalScrollIndicator={false}
@@ -168,7 +217,7 @@ export default class AddTechnique extends React.Component {
           </Block>
           <Block row middle style={styles.rows}>
                       <Input
-                          placeholder="Nazwa zlecenia *"
+                          placeholder="Nazwa zlecenia"
                           style={styles.inputs}
                           iconContent={
                               <Icon
@@ -179,8 +228,8 @@ export default class AddTechnique extends React.Component {
                                   style={styles.inputIcons}
                               />
                           }
-                          value={this.state.event_name}
-                          onChangeText={event_name=>this.setState({event_name})}
+                          value={this.state.support_name}
+                          onChangeText={support_name=>this.setState({support_name})}
                       />
           </Block>
           <Block middle>
@@ -188,7 +237,7 @@ export default class AddTechnique extends React.Component {
                           <Picker
                               selectedValue={this.state.support_type_id}
                               onValueChange={(itemValue, itemIndex) => this.setState({support_type_id: itemValue})}>
-                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj supportu z listy *' value='0' />
+                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj supportu z listy' value='0' />
                                   { data_supports_types.map((item, key)=>
                                       <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                                   )}
@@ -222,6 +271,7 @@ export default class AddTechnique extends React.Component {
                             color: nowTheme.COLORS.HEADER,
                             fontFamily: 'montserrat-regular'
                         }}
+                        initialValue={checkAssemblyValue(item.value)}
                         key={item.value}
                         label={item.label}
                         onChange={(checked) => (checked) ?
@@ -232,10 +282,14 @@ export default class AddTechnique extends React.Component {
                 )}
           </Block>
           <Block row middle style={styles.rows_place}>
+          <SafeAreaView style={{flex: 1}}>
                        <GooglePlacesAutocomplete
-                                                          placeholder='Miejsce montażu *'
+                                                          placeholder='Miejsce montażu'
                                                           GooglePlacesDetailsQuery={{ fields: "geometry" }}
                                                           fetchDetails={true}
+                                                          textInputProps={{
+                                                                          value: (this.state.place!='') ? this.state.place : this.value
+                                                          }}
                                                           styles={{textInput: {
                                                                                backgroundColor: '#ffffff',
                                                                                height: 44,
@@ -258,16 +312,34 @@ export default class AddTechnique extends React.Component {
                                                             key: 'AIzaSyAWnOCMVKbWVyrf1qDKaGKRdP7y58ClvqA',
                                                             language: 'pl'
                                                           }}
+                                                          renderRightButton={() => (
+                                                          						<TouchableOpacity
+                                                          							style={styles.clearButton}
+                                                          							onPress={() => {
+                                                          								this.setState({place: ''});
+                                                          							}}
+                                                          						>
+                                                          							<Icon
+                                                                                                            size={16}
+                                                                                                            color="#ADB5BD"
+                                                                                                            name="simple-remove2x"
+                                                                                                            family="NowExtra"
+                                                                                                            style={styles.removeIcons}
+                                                                                                        />
+                                                          						</TouchableOpacity>
+                                                          					)}
                                                         />
+                                                        </SafeAreaView>
           </Block>
           <Block row middle style={styles.only_label}>
                          <Text
                           style={{ color: '#000000' }}
-                          size={14}>Data i godzina montażu *</Text>
+                          size={14}>Data i godzina montażu</Text>
                      </Block>
                      <Block row middle style={styles.calendar}>
                          <DatePicker
-                            selected={getToday()}
+                            selected={currentDate()}
+                            current={currentDate()}
                             onDateChange={changeDate}
                             onTimeChange={changeTime}
                             minimumDate={getToday()}
@@ -276,7 +348,7 @@ export default class AddTechnique extends React.Component {
 
           <Block row middle style={styles.rows}>
             <Input
-                placeholder="Czas trwania w minutach *"
+                placeholder="Czas trwania w minutach"
                 style={styles.inputs}
                 iconContent={
                     <Icon
@@ -319,7 +391,7 @@ export default class AddTechnique extends React.Component {
                 <Picker
                     selectedValue={this.state.tour_manager_id}
                     onValueChange={(itemValue, itemIndex) => this.setState({tour_manager_id: itemValue})}>
-                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy *' value='0' />
+                        <Picker.Item style={{fontSize:14}} label='Wybierz tour managera z listy' value='0' />
                         { data_teams_managers.map((item, key)=>
                             <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                         )}
@@ -331,7 +403,7 @@ export default class AddTechnique extends React.Component {
                           <Picker
                               selectedValue={this.state.event_type_id}
                               onValueChange={(itemValue, itemIndex) => this.setState({event_type_id: itemValue})}>
-                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj montażu *' value='0' />
+                                  <Picker.Item style={{fontSize:14}} label='Wybierz rodzaj montażu' value='0' />
                                   { data_events_types.map((item, key)=>
                                       <Picker.Item style={{fontSize:14}} label={item.label} value={item.value} key={key} />
                                   )}
@@ -444,5 +516,18 @@ const styles = StyleSheet.create({
       createButton: {
         paddingHorizontal: 10,
         width: 230
-      }
+      },
+      clearButton: {
+        backgroundColor: '#cccccc',
+        borderRadius: 20,
+        width: 26,
+        height: 26,
+        marginLeft: -35,
+        marginTop: 8,
+      },
+      removeIcons: {
+              color: nowTheme.COLORS.ICON_INPUT,
+              marginLeft: 5,
+              marginTop: 5,
+            }
 });

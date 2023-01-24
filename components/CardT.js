@@ -6,9 +6,6 @@ import {useNavigation} from '@react-navigation/native';
 import { nowTheme } from '../constants';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-let userType;
 
 class CardT extends React.Component {
   async addToCalendar(title, startDateUTC, endUTC, place, description) {
@@ -20,7 +17,6 @@ class CardT extends React.Component {
         notes: description
     };
 
-    console.log(eventConfig);
     AddCalendarEvent.presentEventCreatingDialog(eventConfig)
     .then((eventInfo:{calendarItemIdentifier:string,eventIdentifier:string})=>{
         console.log(JSON.stringify(eventInfo));
@@ -92,13 +88,10 @@ class CardT extends React.Component {
       horizontal ? styles.horizontalStyles : styles.verticalStyles,
       styles.shadow
     ];
-let button_remove;
-        AsyncStorage.getItem('logged_user_rights')
-                .then((value) => {
-                  userType = value;
-                  });
 
-     button_remove = (userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.technique_id)}>Usuń montaż</Button> : null);
+    let button_remove = (item.userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.technique_id)}>Usuń montaż</Button> : null);
+    let button_edit = ((item.userType=='admin' || item.userType=='tour_manager') ? <Button style={styles.editButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => navigation.navigate('Add Technique', {itemId: item.technique_id})}>Edytuj montaż</Button> : null);
+    let button_add = (item.showAddButton==1) ? <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button> : null;
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
@@ -116,8 +109,8 @@ let button_remove;
                                      color={nowTheme.COLORS.SECONDARY}
                                    >{(item.support_name!='')?item.support_name+"\n":""}{item.assembly_date}{"\n"}{item.place}</Text></Block>
                      {button_remove}
-                     <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.assembly_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.assembly_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button>
-
+                     {button_edit}
+                     {button_add}
                   </Block>
                 </TouchableWithoutFeedback>
       </Block>
@@ -196,6 +189,15 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 25,
     backgroundColor: 'red',
+    marginBottom: 0
+  },
+  editButton: {
+    fontFamily: 'montserrat-bold',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    width: '90%',
+    height: 25,
+    backgroundColor: '#2973B8',
     marginBottom: 0
   }
 });

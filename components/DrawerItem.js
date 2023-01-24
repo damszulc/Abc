@@ -176,6 +176,8 @@ class DrawerItem extends React.Component {
     const logoutFunc = () => {
         console.log('kliknieto logout');
         AsyncStorage.setItem('logged_user_id', '0');
+        AsyncStorage.setItem('logged_user_rights', '');
+        navigation.replace("Onboarding");
         navigation.navigate('Onboarding');
     }
 

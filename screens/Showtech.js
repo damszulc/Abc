@@ -57,7 +57,7 @@ class Showtech extends React.Component {
           userType = value;
         });
 
-    let contact_phone = (userType == 'admin' || userType == 'tour_manager' || userType == 'audio_visual' ?
+    let contact_phone = (userType == 'admin' || userType == 'tour_manager' ?
           <Block flex style={{ marginTop: 5 }}>
              <Block row left>
                  <Text style={[styles.label]}>Telefon kontaktowy:</Text>

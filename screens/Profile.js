@@ -26,7 +26,6 @@ class Profile extends React.Component {
 
   async getConcert() {
    const { navigation } = this.props;
-   {this.props.route.params?.itemId}
     try {
     var Data = { itemId: this.props.route.params?.itemId };
       const response = await fetch('http://anseba.nazwa.pl/app/get_concerts.php', {method: 'POST', body: JSON.stringify(Data)});
@@ -172,7 +171,7 @@ class Profile extends React.Component {
           <Block flex style={{ marginTop: 0 }}>
             <Block row left>
                 <Text style={[styles.label]}>Data i godzina próby:</Text>
-                <Text size={14} muted style={[styles.value, styles.inline]}>{data.sample_date}</Text>
+                <Text size={14} muted style={[styles.value, styles.inline]}>{data.rehearsal_date}</Text>
             </Block>
           </Block>
           <Block flex style={{ marginTop: 5 }}>

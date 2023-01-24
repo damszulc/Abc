@@ -6,9 +6,6 @@ import {useNavigation} from '@react-navigation/native';
 import { nowTheme } from '../constants';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import Moment from 'moment';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-let userType;
 
 class Card extends React.Component {
   async addToCalendar(title, startDateUTC, endUTC, place, description) {
@@ -94,14 +91,9 @@ class Card extends React.Component {
       styles.shadow
     ];
 
-    let button_remove;
-            AsyncStorage.getItem('logged_user_rights')
-                    .then((value) => {
-                      userType = value;
-                      });
-
-         button_remove = (userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.concert_id)}>Usuń koncert</Button> : null);
-
+    let button_remove = (item.userType=='admin' ? <Button style={styles.removeButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.showAlert(item.concert_id)}>Usuń koncert</Button> : null);
+    let button_edit = ((item.userType=='admin' || item.userType=='tour_manager') ? <Button style={styles.editButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => navigation.navigate('Add Concert', {itemId: item.concert_id})}>Edytuj koncert</Button> : null);
+    let button_add = (item.showAddButton==1) ? <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button> : null;
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
@@ -121,8 +113,9 @@ class Card extends React.Component {
               >{item.team_name.toUpperCase()}{"\n"}{item.concert_date}{"\n"}{item.place}</Text>
             </Block>
             {button_remove}
-             <Button style={styles.articleButton} textStyle={{ fontSize: 12, fontWeight: '400' }} onPress={() => this.addToCalendar(item.team_name, Moment(item.concert_full_date_start).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), Moment(item.concert_full_date_end).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'), item.place, item.event_details)}>Dodaj do kalendarza</Button>
-          </Block>
+            {button_edit}
+            {button_add}
+           </Block>
         </TouchableWithoutFeedback>
       </Block>
     );
@@ -201,6 +194,15 @@ const styles = StyleSheet.create({
       height: 25,
       backgroundColor: 'red',
       marginBottom: 0
+    },
+    editButton: {
+     fontFamily: 'montserrat-bold',
+     paddingHorizontal: 0,
+     paddingVertical: 0,
+     width: '90%',
+     height: 25,
+     backgroundColor: '#2973B8',
+     marginBottom: 0
     }
 });
 
