@@ -22,7 +22,7 @@ export default class Concerts extends Component {
         AsyncStorage.getItem('logged_user_rights')
                      .then((value) => {
                        userType = value;
-                       this.setState({ isLoading: false, active: 'concerts' });
+                       this.setState({ active: 'concerts' });
                      });
 
      AsyncStorage.getItem('logged_user_id').then((value) => {
@@ -52,7 +52,12 @@ export default class Concerts extends Component {
 
     return (
       <View style={{ flex: 1, padding: 24 }}>
-        {isLoading ? <ActivityIndicator size="large" /> : (
+        {isLoading ?
+          <View>
+            <Text style={{padding: theme.SIZES.BASE, alignSelf: 'center'}}>Upewnij się czy masz połączenie z internetem</Text>
+            <ActivityIndicator size="large" />
+          </View>
+        : (
         <>
          <Input
                 right

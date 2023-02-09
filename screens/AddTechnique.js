@@ -6,7 +6,9 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  TextInput,
+  KeyboardAvoidingView
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme, Checkbox } from "galio-framework";
@@ -145,7 +147,10 @@ export default class AddTechnique extends React.Component {
       .then((Response)=>{
       console.log(Response);
         if (Response[0].Message == "Success") {
-          navigation.replace("Technique");
+          this.setState({technique_id: 0, team_id: 0, support_name: '', support_type_id: 0, assembly_type_list: [], assembly_date: getToday(),
+                        assembly_time: '00:00', duration: 0, place: '', place_id: '', longitude: 0.00, latitude: 0.00, event_details: '',
+                        tour_manager_id: 0, event_type_id: 0, contact_phone: ''});
+          navigation.replace("Technika");
           navigation.navigate("Audio Visual Support");
         }
       })
@@ -210,6 +215,7 @@ export default class AddTechnique extends React.Component {
               keyboardShouldPersistTaps='always'
               listViewDisplayed={false}
             >
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
@@ -369,7 +375,7 @@ export default class AddTechnique extends React.Component {
             </Text>
           </Block>
           <Block row middle style={styles.rows_textarea}>
-            <Input
+            <TextInput
                 placeholder="Szczegóły"
                 multiline = {true}
                 numberOfLines = {4}
@@ -438,6 +444,7 @@ export default class AddTechnique extends React.Component {
                 </Button>
             </Block>
           </Block>
+          </KeyboardAvoidingView>
       </ScrollView>
     );
   }
@@ -490,13 +497,14 @@ const styles = StyleSheet.create({
               borderColor: '#E3E3E3',
               borderRadius: 21.5,
               width: width-40,
-              height: theme.SIZES.BASE * 5,
+              height: theme.SIZES.BASE * 10,
               backgroundColor: '#ffffff',
               paddingHorizontal: theme.SIZES.BASE,
+              paddingVertical: theme.SIZES.BASE,
             },
         rows_textarea: {
-            height: theme.SIZES.BASE * 5,
-            paddingHorizontal: theme.SIZES.BASE,
+            height: theme.SIZES.BASE * 10,
+            paddingHorizontal: theme.SIZES.BAS2,
             marginTop: 7,
             marginBottom: 7
           },

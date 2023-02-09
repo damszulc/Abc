@@ -7,7 +7,8 @@ import {
   Dimensions,
   ActivityIndicator,
   FlatList,
-  TextInput
+  TextInput,
+  KeyboardAvoidingView
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Block, Text, theme } from "galio-framework";
@@ -23,8 +24,6 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 export default class AddConcert extends React.Component {
  constructor(props) {
     super(props);
-
-  console.log(this.props.route.params?.itemId);
 
     this.state = {
         data_teams: [],
@@ -62,6 +61,7 @@ export default class AddConcert extends React.Component {
   }
 
    async getConcert() {
+   console.log('get concert');
      const { navigation } = this.props;
       try {
       var Data = { itemId: this.props.route.params?.itemId };
@@ -151,6 +151,9 @@ export default class AddConcert extends React.Component {
       .then((Response)=>{
       console.log(Response);
         if (Response[0].Message == "Success") {
+        this.setState({concert_id: 0, team_id: 0, artist_name: '', place: '', place_id: '', longitude: 0.00, latitude: 0.00,
+                       concert_date: getToday(), concert_time: '00:00', duration: 0, rehearsal_date: getToday(), rehearsal_time: '00:00',
+                       sets_number: 0, event_details: '', event_type_id: 0, tour_manager_id: 0, contact_phone: ''});
           navigation.replace("Concerts");
           navigation.navigate("Concerts");
         }
@@ -217,13 +220,13 @@ export default class AddConcert extends React.Component {
     }
 
     return isLoading ? <ActivityIndicator size="large" /> : (
-
-      <ScrollView
+ <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.settings}
         keyboardShouldPersistTaps='always'
         listViewDisplayed={false}
-      >
+      ><KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
+
           <Block center style={styles.title}>
             <Text style={{ fontFamily: 'montserrat-bold', paddingBottom: 5 }} size={theme.SIZES.BASE} color={nowTheme.COLORS.TEXT}>
                 Dane podstawowe
@@ -391,7 +394,7 @@ export default class AddConcert extends React.Component {
                 placeholder="Szczegóły koncertu"
                 style={styles.inputs_textarea}
                 multiline = {true}
-                numberOfLines = {4}
+                numberOfLines = {10}
                 iconContent={
                     <Icon
                         size={16}
@@ -443,8 +446,9 @@ export default class AddConcert extends React.Component {
                     </Text>
                 </Button>
             </Block>
-          </Block>
+          </Block></KeyboardAvoidingView>
       </ScrollView>
+
     );
   }
 }
@@ -495,13 +499,14 @@ const styles = StyleSheet.create({
           borderColor: '#E3E3E3',
           borderRadius: 21.5,
           width: width-40,
-          height: theme.SIZES.BASE * 5,
+          height: theme.SIZES.BASE * 10,
           backgroundColor: '#ffffff',
           paddingHorizontal: theme.SIZES.BASE,
+          paddingVertical: theme.SIZES.BASE,
         },
     rows_textarea: {
-        height: theme.SIZES.BASE * 5,
-        paddingHorizontal: theme.SIZES.BASE,
+        height: theme.SIZES.BASE * 10,
+        paddingHorizontal: theme.SIZES.BAS2,
         marginTop: 7,
         marginBottom: 7
       },
